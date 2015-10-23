@@ -1,0 +1,55 @@
+body {
+	max-width: 1030px;
+	margin: 0 auto;
+}
+
+/* Header */
+
+header {
+	padding: 20px 0 50px 0;
+}
+
+header h1 {
+	float: left;
+	margin: 0 0 0 20px;
+}
+
+ul.navigation {
+	float: right;
+	margin: 0 20px 0 0;
+}
+
+ul.navigation li {
+	display: inline;
+	list-style-type: none;
+}
+
+/* Main */
+
+section.main {
+	clear: both;
+}
+
+/* Article list */
+
+ul.articles {
+	margin: 0;
+	padding: 0;
+}
+
+ul.articles li {
+	list-style-type: none;
+	float: left;
+	display: block;
+	width: 50%;
+	margin: 0;
+	padding: 20px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+
+.articles time {
+	display: block;
+}
+
