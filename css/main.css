@@ -28,6 +28,8 @@
 body {
 	max-width: 1030px;
 	margin: 0 auto;
+
+	-webkit-font-smoothing: antialiased;
 }
 
 /* Header */
