@@ -113,5 +113,37 @@ ul.articles li {
 
 .articles time {
 	display: block;
+	color: #a3a3a3;
+	font-family: AndadaSC;
+	font-weight: bold;
+	font-size: 12pt;
+	letter-spacing: 1px;
+	margin-bottom: 10px;
 }
 
+.articles a {
+	font-family: Andada;
+	font-size: 36pt;
+	text-decoration: none;
+}
+
+.articles a:link {
+	color: #000;
+}
+
+.articles a:visited {
+	color: #000;
+}
+
+.articles a:hover {
+	color: #ea4525;
+}
+
+.articles a:active {
+	color: #ea4525;
+}
+
+.articles p {
+	font-family: AndadaSC;
+	font-size: 24pt;
+}
