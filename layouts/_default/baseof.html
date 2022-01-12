@@ -1,0 +1,70 @@
+<html>
+<head>
+  {{ $title := (printf "%s | Darren Clark" .Title) }}
+  {{ $ogtitle := (printf "%s | Darren Clark" .Title) }}
+  {{ if .IsHome }}
+    {{ $title = "Darren Clark" }}
+    {{ $ogtitle = "Darren Clark" }}
+  {{ else if .IsPage }}
+    {{ $title = (printf "%s | Darren Clark" .Title) }}
+    {{ $ogtitle = .Title }}
+  {{ else if eq (.Section) "tags" }}
+    {{ $title = (printf "#%s | Darren Clark" .Page.Data.Term) }}
+    {{ $ogtitle = (printf "Posts tagged #%s" .Page.Data.Term) }}
+  {{ end }}
+
+  <title>{{ $title }}</title>
+
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical" content="{{ .Permalink }}">
+
+  <meta property="og:title" content="{{ $ogtitle }}">
+  <meta property="og:site_name" content="Darren Clark">
+  <meta property="og:url" content="{{ .Permalink }}">
+  <meta property="og:image" content="{{ .Site.BaseURL }}apple-touch-icon.png" />
+
+  {{ if .IsPage }}
+  <meta property="og:type" content="article">
+  <meta property="og:description" content="{{ .Summary }}">
+  <meta name="description" content="{{ .Summary }}">
+  {{ else }}
+  <meta property="og:type" content="website">
+  {{ end }}
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131464577-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-131464577-1');
+  </script>
+
+</head>
+<body>
+  <div class="header">
+    <h1><a href="/">Darren Clark</a></h1>
+    <ul class="navigation">
+      <li>
+        <a href="/articles">Articles</a>
+      </li>
+      <li>
+        <a href="/tags">Tags</a>
+      </li>
+    </ul>
+  </div>
+  {{ block "main" . }}
+  {{ end }}
+  <div class="footer">
+    <p>&copy; Darren Clark {{ dateFormat "2006" now }}</p>
+    <p>
+      Content licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.5/ca/">Creative Commons Attribution-ShareAlike 2.5 Canada License</a> unless otherwise noted.<br/>
+      Code snippets licensed under the <a rel="license" href="https://opensource.org/licenses/MIT">MIT License</a> unless otherwise noted.
+    </p>
+    <p>Powered by <a href="https://github.com/gohugoio/hugo">Hugo</a></p>
+  </div>
+</body>
+</html>

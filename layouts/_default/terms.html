@@ -1,0 +1,8 @@
+{{ define "main" }}
+<ul class="tags-page">
+  {{ $data := .Data }}
+  {{ range $key, $value := .Data.Terms }}
+  <li><a href="/{{ $data.Plural }}/{{ $key | urlize }}">#{{ $key }} <span class="tag-post-count">({{ len $value }})</span></a></li>
+  {{ end }}
+</ul>
+{{ end }}

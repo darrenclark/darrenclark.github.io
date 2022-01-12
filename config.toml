@@ -3,7 +3,5 @@ languageCode = "en-us"
 title = "Darren Clark"
 pygmentsCodefences = true
 
-theme = "ananke"
-
 [permalinks]
   articles = "/:title"
