@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Initial build of CSS
+bin/tailwindcss
+
+# Start both hugo and tailwind watchers
+hugo server -D &
+bg_pid="$!"
+bin/tailwindcss --watch
+
+# Ctrl-C exits Hugo, so we still need to exit tailwindcss
+kill $bg_pid
