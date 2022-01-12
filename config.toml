@@ -5,3 +5,6 @@ pygmentsCodefences = true
 
 [permalinks]
   articles = "/:title"
+
+[markup.goldmark.renderer]
+unsafe= true
