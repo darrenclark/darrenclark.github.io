@@ -1,7 +1,7 @@
 ---
 title: "Style test post"
 date: 2018-12-23T15:03:17-07:00
-tags: [swift,uicollectionview]
+tags: [swift]
 draft: true
 ---
 

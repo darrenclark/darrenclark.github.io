@@ -1,7 +1,7 @@
 ---
 title: "How can I test Kubernetes permissions?"
 date: 2020-11-15T11:27:38-05:00
-tags: [kubernetes,rbac]
+tags: [kubernetes]
 draft: false
 summary: "Or, &ldquo;impersonating a service account with <code>kubectl</code> to verify permissions are correctly configured&rdquo;"
 ---

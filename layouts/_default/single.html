@@ -1,17 +1,15 @@
 {{ define "main" }}
-<div class="post-header">
-  <h1 class="post-listing-title">{{$.Title}}</h2>
-  <p class="post-listing-date">{{$.Date.Format "Jan 02, 2006"}}</p>
-  <ul class="post-listing-tags">
-  {{ range $.Param "tags" }}
-    {{ $name := . }}
-    {{ with $.Site.GetPage (printf "/%s/%s" "tags" $name) }}
-        <li><a href="{{ .Permalink }}">#{{ $name }}</a></li>
+
+<div class="mx-auto max-w-screen-md mt-4">
+  <h1 class="text-lg font-bold mb-3">{{.Title}}</h1>
+  <p>
+    Published on {{.Date.Format "Jan 02, 2006"}} in 
+    {{ range .Params.tags }}
+        <a href="{{ ($.Site.GetPage (printf "/%s/%s" "tags" .)).Permalink }}">#{{ . }}</a>
     {{ end }}
-  {{ end }}
-  </ul>
-</div>
-<div class="post">
+  </p>
+
   {{.Content}}
 </div>
+
 {{ end }}

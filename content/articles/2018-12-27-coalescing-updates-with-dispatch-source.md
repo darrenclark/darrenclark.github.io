@@ -1,7 +1,7 @@
 ---
 title: "Coalescing Updates With Dispatch Sources"
 date: 2018-12-27T18:27:36+00:00
-tags: [ios,swift,grand-central-dispatch]
+tags: [swift]
 draft: false
 summary: "Today we use <code>DispatchSourceUserDataAdd</code> to coalesce calls to <code>UITableView.reloadData()</code>"
 ---

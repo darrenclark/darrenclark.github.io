@@ -1,34 +1,32 @@
 {{ define "main" }}
-{{ if eq (.Section) "tags" }}
-  <h1>#{{ .Page.Data.Term }}</h1>
-{{ end }}
 
-<ul>
-{{ $posts := (.Pages) }}
-{{ $len := (len $posts) }}
+{{ $showTags := ne (.Section) "tags" }}
 
-{{ range $index, $post := $posts }}
-  <li class="post-listing-post">
-    <h2 class="post-listing-title"><a href="{{.Permalink}}">{{$post.Title}}</a></h2>
-    <p class="post-listing-date">{{$post.Date.Format "Jan 02, 2006"}}</p>
-    <ul class="post-listing-tags">
-      {{ range $post.Param "tags" }}
-        {{ $name := . }}
-        {{ with $.Site.GetPage (printf "/%s/%s" "tags" $name) }}
-            <li><a href="{{ .Permalink }}">#{{ $name }}</a></li>
+
+<div class="mx-auto max-w-screen-md mt-4">
+  <h1 class="text-lg font-bold mb-3">
+    {{ if eq (.Section) "tags" }}
+      Articles about #{{ .Page.Data.Term }}
+    {{ else }}
+      Recent Articles
+    {{ end }}
+  </h1>
+
+  <ul>
+
+    {{ range .Pages }}
+
+    <li class="pb-1">
+      <a href="{{.Permalink}}">{{.Date.Format "Jan 02, 2006"}} {{.Title}}</a>
+      {{ if $showTags }}
+        {{ range .Params.tags }}
+            <a href="{{ ($.Site.GetPage (printf "/%s/%s" "tags" .)).Permalink }}">#{{ . }}</a>
         {{ end }}
       {{ end }}
-    </ul>
-    {{ if isset .Params "summary" }}
-    <p class="post-listing-summary">{{ .Params.summary | safeHTML }}</p>
-    {{ else }}
-    <p class="post-listing-summary">{{ .Summary }}</p>
+    </li>
+
     {{ end }}
-    <a class="post-listing-readmore"><a href="{{.Permalink}}">Read More...</a></h2>
-    {{ if ne (add $index 1) $len }}
-    <div class="spacer"></div>
-    {{ end }}
-  </li>
-{{ end }}
-</ul>
+  <ul>
+</div>
+
 {{ end }}

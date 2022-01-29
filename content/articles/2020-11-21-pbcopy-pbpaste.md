@@ -3,7 +3,7 @@ title: "Copying and pasting to terminal programs on macOS"
 date: 2020-11-21T17:43:07-05:00
 draft: false
 summary: "Two of my favourite shell commands on macOS are <code>pbcopy</code> and <code>pbpaste</code>."
-tags: ["macos", "shell", "terminal"]
+tags: ["shell"]
 ---
 
 Two of my favourite shell commands on macOS are `pbcopy` and `pbpaste`.
