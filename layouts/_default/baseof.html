@@ -44,27 +44,28 @@
   </script>
 
 </head>
-<body>
-  <div class="header">
-    <h1><a href="/">Darren Clark</a></h1>
-    <ul class="navigation">
-      <li>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+  <nav class="flex flex-row mx-auto items-baseline max-w-screen-md mt-4 border-solid border-b-[1px] border-black pb-2">
+    <div class="flex-grow font-extrabold text-5xl">
+      <a href="/">Darren Clark</a>
+    </div>
+    <ul class="flex-shrink">
+      <li class="inline-block mr-2">
         <a href="/articles">Articles</a>
       </li>
-      <li>
+      <li class="inline-block">
         <a href="/tags">Tags</a>
       </li>
     </ul>
-  </div>
+  </nav>
   {{ block "main" . }}
   {{ end }}
-  <div class="footer">
-    <p>&copy; Darren Clark {{ dateFormat "2006" now }}</p>
+  <footer class="text-center text-sm text-gray-500 mx-auto max-w-screen-md mt-4 border-solid border-t-[1px] border-black pb-2">
+    <p>Copywrite &copy; Darren Clark 2018 - {{ dateFormat "2006" now }}</p>
     <p>
-      Content licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.5/ca/">Creative Commons Attribution-ShareAlike 2.5 Canada License</a> unless otherwise noted.<br/>
-      Code snippets licensed under the <a rel="license" href="https://opensource.org/licenses/MIT">MIT License</a> unless otherwise noted.
+      <a rel="license" class="underline" href="http://creativecommons.org/licenses/by-sa/2.5/ca/">CC BY-SA 2.5 CA</a> (content) /
+      <a rel="license" class="underline" href="https://unlicense.org">Unlicense</a> (code snippets)
     </p>
-    <p>Powered by <a href="https://github.com/gohugoio/hugo">Hugo</a></p>
   </div>
 </body>
 </html>

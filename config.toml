@@ -3,6 +3,9 @@ languageCode = "en-us"
 title = "Darren Clark"
 pygmentsCodefences = true
 
+[params]
+  mainSections = ["articles"]
+
 [permalinks]
   articles = "/:title"
 
