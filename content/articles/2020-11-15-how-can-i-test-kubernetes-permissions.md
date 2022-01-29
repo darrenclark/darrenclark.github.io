@@ -69,7 +69,7 @@ This allows us to run `kubectl` as if we were `alice` or `bob`.
 
 We can use the Job definition in [this Gist](https://gist.github.com/darrenclark/1e0810a0e864efe9bb712d3d0dd991c7#file-job-yaml) to test it out.
 
-### Testing `alice`'s permissions
+## Testing `alice`'s permissions
 
 Let's try creating a job with `alice`:
 
@@ -90,7 +90,7 @@ kubectl --as=system:serviceaccount:default:alice get jobs
 
 No surprises here, as we granted `alice` read and write access to `jobs`.
 
-### Testing `bob`'s permissions
+## Testing `bob`'s permissions
 
 Next, lets try viewing the job as `bob`:
 

@@ -33,7 +33,7 @@ Read on for some of my favourite use cases, pulled straight from my shell
 history.
 
 
-### Formatting JSON
+# Formatting JSON
 
 Using [`jq`](https://stedolan.github.io/jq/) to format JSON:
 
@@ -51,7 +51,7 @@ pbpaste | jq . | pbcopy
 # }
 ```
 
-### Decoding base64
+# Decoding base64
 
 For peeking inside random base64 encoded values:
 
@@ -63,7 +63,7 @@ pbpaste | base64 -D
 # Hello, world!
 ```
 
-### Uppercasing a string
+# Uppercasing a string
 
 Read as:
 
@@ -81,7 +81,7 @@ pbpaste | tr '[[:lower:]]' '[[:upper:]]' | pbcopy
 # C600A378-2055-4F2F-82A2-FD00A6EA9629
 ```
 
-### How long is that string?
+# How long is that string?
 
 The `wc` (word count) command can be used to count characters (`-c`), lines
 (`-l`), and of course, words (`-w`).
@@ -97,7 +97,7 @@ pbpaste | wc -c
 #      43
 ```
 
-### And my favourite, `x = x`
+# And my favourite, `x = x`
 
 Got a bunch of pesky text formatting in your pasteboard? Want to get rid of it?
 

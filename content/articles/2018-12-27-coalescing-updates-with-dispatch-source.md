@@ -10,7 +10,7 @@ Today I wanted to look at using `DispatchSourceUserDataAdd` to coalesce calls to
 
 If you want to follow along in Xcode, feel free to copy/paste [this gist](https://gist.github.com/darrenclark/fa32cb5953ae6ccca16366b44098101a) into an iOS Playground.
 
-## Background
+# Background
 
 <center>
 <img src="/images/2018-12-27-todo-list.png" alt="App screenshot" style="max-width: 280" />
@@ -139,7 +139,7 @@ class ViewController: UITableViewController {
 
 Since our `ViewController` observes changes to our model via `NotificationCenter`, it automatically updates the UI in response to the user tapping the 'Complete All' button.
 
-## The Problem
+# The Problem
 
 Some of you may have already noticed one small issue.
 
@@ -150,18 +150,18 @@ Some of you may have already noticed one small issue.
 To confirm this, I've added a `print` statement when `tableView.reloadData()` is called.
 
 <center>
-<img src="/images/2018-12-27-broken.png" alt="Xcode screenshot demonstrating the bug" style="max-width: 100%" />
+<img src="/images/2018-12-27-broken.png" alt="Xcode screenshot demonstrating the bug" />
 </center>
 
 Sure enough!  Tapping 'Complete All' printed out five messages, one for each item we have.
 
 Perhaps not a big issue if we have one, two, or even five items, but it could be if we have fifty or one hundred items.  While our code is simple and fairly straightforward, we are unnecessary calling `tableView.reloadData()` a lot!  We should take a look into this before shipping our app.
 
-## The Solution
+# The Solution
 
 Ideally we want to coalesce all of changes into a single call to `tableView.reloadData()`.  Thankfully, Grand Central Dispatch provides us the perfect tool for the job - [`DispatchSourceUserDataAdd`](https://developer.apple.com/documentation/dispatch/dispatchsourceuserdataadd).
 
-### Dispatch Sources
+## Dispatch Sources
 
 Dispatch Sources are special objects that schedule blocks to run when certain low level events happen.  For example, [`DispatchSourceSignal`](https://developer.apple.com/documentation/dispatch/dispatchsourcesignal) will enqueue a block on a given `DispatchQueue` when the current process receives certain Unix signals.  As many of these are wrapped up in higher level APIs in `Foundation.framework` or elsewhere, it's pretty rare to use Dispatch Sources directly.  However, there are a couple Dispatch Sources that are quite useful for us:
 
@@ -181,7 +181,7 @@ All three of these operate in roughly the same way:
 
 Of particular interest to us is the fact that a block is only enqueued when the *user data* becomes non-zero, not each time it is updated. 
 
-### Using `DispatchSourceUserDataAdd`
+## Using `DispatchSourceUserDataAdd`
 
 Despite being advertised as "low-level", `DispatchSourceUserDataAdd` is fairly straightforward.  First we create one via the `DispatchSource.makeUserDataAddSource(queue:)` function.  We'll put this in our `ViewController` class.
 
@@ -232,12 +232,12 @@ class ViewController: UITableViewController {
 Let's give this a go in Xcode...
 
 <center>
-<img src="/images/2018-12-27-fixed.png" alt="Xcode screenshot demonstrating that the bug is fixed" style="max-width: 100%" />
+<img src="/images/2018-12-27-fixed.png" alt="Xcode screenshot demonstrating that the bug is fixed" />
 </center>
 
 Perfect! Our code only called `tableView.reloadData()` once, despite getting five `TodoListItemUpdated` notifications.
 
-## Final Thoughts
+# Final Thoughts
 
 I've put the final code up in [this gist](https://gist.github.com/darrenclark/7f8ef59097aa7ee7e6f79d301fac8ec0).
 

@@ -1,7 +1,6 @@
 baseURL = "https://darrenclark.ca/"
 languageCode = "en-us"
 title = "Darren Clark"
-pygmentsCodefences = true
 
 [params]
   mainSections = ["articles"]
@@ -11,3 +10,7 @@ pygmentsCodefences = true
 
 [markup.goldmark.renderer]
 unsafe= true
+
+[markup.highlight]
+noClasses=false
+guessSyntax=false
