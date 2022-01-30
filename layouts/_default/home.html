@@ -11,14 +11,16 @@
         <a class="underline" href="https://twitter.com/darrenclark">Twitter</a>
       </p>
   </div>
-  <div class="w-2/3 border-solid border-l-[1px] border-black pl-4">
+  <div class="w-2/3 border-solid border-l-[1px] border-amber-600 pl-4">
     <ul>
       <h1 class="text-lg font-bold mb-3">Recent Articles</h1>
 
       {{ range first 10 (where $.Site.RegularPages "Type" "articles") }}
 
       <li class="pb-1">
-        <a href="{{.Permalink}}">{{.Date.Format "Jan 02, 2006"}} {{.Title}}</a>
+        <a href="{{.Permalink}}">
+          <span class="w-24 text-right text-sm font-light mr-1 inline-block">{{.Date.Format "Jan 02, 2006"}}</span> <span class="">{{.Title}}</a>
+        </a>
       </li>
 
       {{ end }}

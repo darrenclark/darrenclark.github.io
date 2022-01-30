@@ -5,7 +5,7 @@
   <p class="text-center text-sm">
     Published on {{.Date.Format "Jan 02, 2006"}} in 
     {{ range .Params.tags }}
-        <a href="{{ ($.Site.GetPage (printf "/%s/%s" "tags" .)).Permalink }}">#{{ . }}</a>
+        <a class="text-orange-800 font-light" href="{{ ($.Site.GetPage (printf "/%s/%s" "tags" .)).Permalink }}">#{{ . }}</a>
     {{ end }}
   </p>
 

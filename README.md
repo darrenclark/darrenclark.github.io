@@ -14,3 +14,5 @@
 - [ ] CSS / HTML
 - [ ] github actions
 - [ ] favicon / apple-touch-icon (see `baseof.html`)
+- [ ] color palette
+

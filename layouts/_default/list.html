@@ -6,7 +6,7 @@
 <div class="mx-auto max-w-screen-md mt-4">
   <h1 class="text-lg font-bold mb-3">
     {{ if eq (.Section) "tags" }}
-      Articles about #{{ .Page.Data.Term }}
+      Articles about <span class="text-orange-800 font-light">#{{ .Page.Data.Term }}</span>
     {{ else }}
       Recent Articles
     {{ end }}
@@ -17,10 +17,11 @@
     {{ range .Pages }}
 
     <li class="pb-1">
-      <a href="{{.Permalink}}">{{.Date.Format "Jan 02, 2006"}} {{.Title}}</a>
+      <a href="{{.Permalink}}">
+        <span class="w-24 text-right text-sm font-light mr-2 inline-block">{{.Date.Format "Jan 02, 2006"}}</span> <span class="">{{.Title}}</a>
       {{ if $showTags }}
         {{ range .Params.tags }}
-            <a href="{{ ($.Site.GetPage (printf "/%s/%s" "tags" .)).Permalink }}">#{{ . }}</a>
+            <a class="ml-2 font-light text-sm text-orange-800" href="{{ ($.Site.GetPage (printf "/%s/%s" "tags" .)).Permalink }}">#{{ . }}</a>
         {{ end }}
       {{ end }}
     </li>
