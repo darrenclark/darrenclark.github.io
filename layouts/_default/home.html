@@ -1,25 +1,25 @@
 {{ define "main" }}
 
-<div class="mx-auto max-w-screen-md flex mt-4">
-  <div class="w-1/3 text-center">
+<div class="mx-auto max-w-screen-md md:flex mt-4">
+  <div class="md:w-1/3 text-center mb-4">
       <h1 class="text-lg font-bold mb-3">About Me</h1>
 
-      <p class="mb-3">Software developer living and working in Toronto</p>
+      <p class="mb-3 mx-2">Software developer living and working in Toronto</p>
 
       <p>
         <a class="underline" href="https://github.com/darrenclark">Github</a> /
         <a class="underline" href="https://twitter.com/darrenclark">Twitter</a>
       </p>
   </div>
-  <div class="w-2/3 border-solid border-l-[1px] border-amber-600 pl-4">
-    <ul>
-      <h1 class="text-lg font-bold mb-3">Recent Articles</h1>
+  <div class="md:w-2/3 border-solid border-t-[1px] md:border-t-0 md:border-l-[1px] border-amber-600 pl-2 pr-2 md:pl-4 md:pr-0">
+    <ul class="md:mt-0 md:mx-0 mt-4 mx-2">
+      <h1 class="text-center md:text-left text-lg font-bold mb-3">Recent Articles</h1>
 
       {{ range first 10 (where $.Site.RegularPages "Type" "articles") }}
 
-      <li class="pb-1">
+      <li class="pb-2 md:pb-1">
         <a href="{{.Permalink}}">
-          <span class="w-24 text-right text-sm font-light mr-1 inline-block">{{.Date.Format "Jan 02, 2006"}}</span> <span class="">{{.Title}}</a>
+          <span class="md:w-24 md:text-right md:inline-block text-sm font-light mr-1">{{.Date.Format "Jan 02, 2006"}}</span> <span class="">{{.Title}}</a>
         </a>
       </li>
 
