@@ -4,10 +4,16 @@
 
 - `bin/watch` for development server
 
+- `bin/build` to build site
+
+- `bin/build --baseURL http://localhost:8000/ && (cd public && python -m http.server 8000)`
+
 - posts go in `content/`
 
 - `layout/` has HTML templates
-  - TailwindCSS compiles `layouts/_default/main.css` to `static/style.css`
+  - TailwindCSS compiles `layouts/_default/main.css` to `assets/style.css`
+
+- to test full build locally:
 
 ## TODO
 

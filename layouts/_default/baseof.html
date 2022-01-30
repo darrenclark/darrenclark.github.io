@@ -15,7 +15,10 @@
 
   <title>{{ $title }}</title>
 
-  <link rel="stylesheet" type="text/css" href="/style.css" />
+  {{ $css := resources.Get "./style.css" }}
+  {{ $secureCSS := $css | resources.Fingerprint "sha512" }}
+  <link rel=stylesheet type="text/css" href="{{ $secureCSS.Permalink }}"></script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="canonical" content="{{ .Permalink }}">
