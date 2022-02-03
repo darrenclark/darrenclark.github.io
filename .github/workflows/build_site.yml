@@ -1,0 +1,29 @@
+name: Build Site
+
+on:
+  push:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - run: npm install
+
+      - name: Run a multi-line script
+        run: |
+          cd /tmp
+          curl -L -o hugo.tar.gz https://github.com/gohugoio/hugo/releases/download/v0.92.1/hugo_0.92.1_Linux-64bit.tar.gz
+          tar -xzf hugo.tar.gz
+          mv hugo /usr/local/bin
+          
+      - run: bin/build
