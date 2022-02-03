@@ -1,0 +1,144 @@
+<html>
+<head>
+  
+  
+  
+    
+    
+  
+
+  <title>How can I test Kubernetes permissions? | Darren Clark</title>
+
+  
+  
+  <link rel=stylesheet type="text/css" href="https://darrenclark.ca/style.95c4f7f9046e280d078a558a68b0186395789e6e1b5fc06833f3e6c8fae188c06a456cecf7aa8291a3724e8e9c66599cfbb3a00bcc84c6609588a82e996b2a6c.css"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical" content="https://darrenclark.ca/how-can-i-test-kubernetes-permissions/">
+
+  <meta property="og:title" content="How can I test Kubernetes permissions?">
+  <meta property="og:site_name" content="Darren Clark">
+  <meta property="og:url" content="https://darrenclark.ca/how-can-i-test-kubernetes-permissions/">
+  <meta property="og:image" content="https://darrenclark.ca/apple-touch-icon.png" />
+
+  
+  <meta property="og:type" content="article">
+  <meta property="og:description" content="Or, “impersonating a service account with kubectl to verify permissions are correctly configured”">
+  <meta name="description" content="Or, “impersonating a service account with kubectl to verify permissions are correctly configured”">
+  
+
+
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131464577-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-131464577-1');
+  </script>
+
+</head>
+<body class="bg-[#f4f4f4] font-sans leading-normal tracking-normal">
+  <nav class="flex flex-row mx-auto items-baseline max-w-screen-md mt-4 border-solid border-b-[1px] border-amber-600 px-2 md:px-2 lg:px-0 md:pb-2">
+    
+      <div class="flex-grow font-extrabold text-xl">
+        <a href="/">Darren Clark</a>
+      </div>
+    
+    <ul class="flex-shrink">
+      <li class="inline-block mr-2">
+        <a href="/articles">Articles</a>
+      </li>
+    </ul>
+  </nav>
+  
+
+<div class="mx-auto max-w-screen-md mt-4">
+  <h1 class="text-4xl font-bold mb-3 mt-20 text-center">How can I test Kubernetes permissions?</h1>
+  <p class="text-center text-sm">
+    Published on Nov 15, 2020 in 
+    
+        <a class="text-orange-800 font-light" href="https://darrenclark.ca/tags/kubernetes/">#kubernetes</a>
+    
+  </p>
+
+  <div class="markdown text-justify mx-4 my-20">
+    <p>They say a <code>bash</code> one-liner is worth a thousand words, or something like that&hellip;</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">kubectl --as system:serviceaccount:default:myapp get pods
+<span class="c1"># Error from server (Forbidden): pods is forbidden: User </span>
+<span class="c1"># &#34;system:serviceaccount:default:myapp&#34; cannot list resource </span>
+<span class="c1"># &#34;pods&#34; in API group &#34;&#34; in the namespace &#34;default&#34;</span>
+</code></pre></div><hr>
+<p>Recently I found myself setting up a <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/">Kubernetes service account</a> to give my application read access to some Kubernetes resources.  Following the <a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a>, I wanted to ensure my application had the absolute minimum access it needed.</p>
+<p>As I prepared the Kubernetes YAML files, I wondered how I could test these locally before deploying.  Follow along below to see the process I used.</p>
+<h1 id="setting-the-stage">Setting the Stage</h1>
+<p>First, we&rsquo;ll need a Kubernetes cluster to test on.</p>
+<p>I&rsquo;m going to use <a href="https://minikube.sigs.k8s.io/docs/start/"><code>minikube</code></a> to create a test cluster on my laptop, but any Kubernetes cluster will work.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">minikube start
+<span class="c1"># 😄  minikube v1.15.0 on Darwin 10.15.5</span>
+<span class="c1"># ✨  Automatically selected the docker driver. Other choices: hyperkit, virtualbox</span>
+<span class="c1"># 👍  Starting control plane node minikube in cluster minikube</span>
+<span class="c1"># .....</span>
+<span class="c1"># 🏄  Done! kubectl is now configured to use &#34;minikube&#34; cluster and &#34;default&#34; namespace by default</span>
+</code></pre></div><h1 id="meet-alice-and-bob">Meet Alice and Bob</h1>
+<p>We&rsquo;ll need two test subjects (pun intended).  I&rsquo;ve put together a Kubernetes config that:</p>
+<ul>
+<li>Creates two service accounts, <code>alice</code> and <code>bob</code></li>
+<li>Grants both <code>alice</code> and <code>bob</code> permissions to view <a href="https://kubernetes.io/docs/concepts/workloads/controllers/job/">Kubernetes jobs</a></li>
+<li>Grants <code>alice</code> permissions to create new jobs</li>
+</ul>
+<p>You can <a href="https://gist.github.com/darrenclark/1e0810a0e864efe9bb712d3d0dd991c7#file-service-accounts-and-permissions-yaml">view the gist on Github</a>.  We&rsquo;ll apply it to our Minikube cluster:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">kubectl apply -f https://gist.githubusercontent.com/darrenclark/1e0810a0e864efe9bb712d3d0dd991c7/raw/83458fdf93c3aea1be292506e28a26c73e68e9db/service-accounts-and-permissions.yaml
+<span class="c1"># serviceaccount/alice created</span>
+<span class="c1"># serviceaccount/bob created</span>
+<span class="c1"># role.rbac.authorization.k8s.io/jobs-viewer created</span>
+<span class="c1"># role.rbac.authorization.k8s.io/jobs-manager created</span>
+<span class="c1"># rolebinding.rbac.authorization.k8s.io/alice-and-bob-jobs-viewer created</span>
+<span class="c1"># rolebinding.rbac.authorization.k8s.io/alice-jobs-manager created</span>
+</code></pre></div><h1 id="testing-out-our-permissions">Testing out our permissions</h1>
+<p>Let&rsquo;s test out the permissions on our newly created service accounts.  Lucky for us, <code>kubectl</code> has the perfect tool for the job.  From the man page:</p>
+<pre tabindex="0"><code>    --as=&quot;&quot;      Username to impersonate for the operation
+</code></pre><p>This allows us to run <code>kubectl</code> as if we were <code>alice</code> or <code>bob</code>.</p>
+<p>We can use the Job definition in <a href="https://gist.github.com/darrenclark/1e0810a0e864efe9bb712d3d0dd991c7#file-job-yaml">this Gist</a> to test it out.</p>
+<h2 id="testing-alices-permissions">Testing <code>alice</code>&rsquo;s permissions</h2>
+<p>Let&rsquo;s try creating a job with <code>alice</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">kubectl create <span class="se">\
+</span><span class="se"></span>  --as<span class="o">=</span>system:serviceaccount:default:alice <span class="se">\
+</span><span class="se"></span>  -f https://gist.githubusercontent.com/darrenclark/1e0810a0e864efe9bb712d3d0dd991c7/raw/83458fdf93c3aea1be292506e28a26c73e68e9db/job.yaml
+<span class="c1"># job.batch/echo-job-jv8jh created</span>
+</code></pre></div><p>And viewing that job as <code>alice</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">kubectl --as<span class="o">=</span>system:serviceaccount:default:alice get <span class="nb">jobs</span>
+<span class="c1"># NAME             COMPLETIONS   DURATION   AGE</span>
+<span class="c1"># echo-job-jv8jh   1/1           3s         39s</span>
+</code></pre></div><p>No surprises here, as we granted <code>alice</code> read and write access to <code>jobs</code>.</p>
+<h2 id="testing-bobs-permissions">Testing <code>bob</code>&rsquo;s permissions</h2>
+<p>Next, lets try viewing the job as <code>bob</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">kubectl --as<span class="o">=</span>system:serviceaccount:default:bob get <span class="nb">jobs</span>
+<span class="c1"># NAME             COMPLETIONS   DURATION   AGE</span>
+<span class="c1"># echo-job-jv8jh   1/1           3s         3m25s</span>
+</code></pre></div><p>Looks good.  What happens when we try to create a job as <code>bob</code>?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">kubectl create <span class="se">\
+</span><span class="se"></span>  --as<span class="o">=</span>system:serviceaccount:default:bob <span class="se">\
+</span><span class="se"></span>  -f https://gist.githubusercontent.com/darrenclark/1e0810a0e864efe9bb712d3d0dd991c7/raw/83458fdf93c3aea1be292506e28a26c73e68e9db/job.yaml
+<span class="c1"># Error from server (Forbidden): error when creating &#34;https://gist.githubusercontent.com/darrenclark/1e0810a0e864efe9bb712d3d0dd991c7/raw/83458fdf93c3aea1be292506e28a26c73e68e9db/job.yaml&#34;:</span>
+<span class="c1"># jobs.batch is forbidden: User &#34;system:serviceaccount:default:bob&#34; </span>
+<span class="c1"># cannot create resource &#34;jobs&#34; in API group &#34;batch&#34; in the namespace</span>
+<span class="c1"># &#34;default&#34;</span>
+</code></pre></div><p>As we expected!  We gave <code>bob</code> read-only access to jobs, so it makes sense we got an error back.</p>
+<hr>
+<p>I was quite happy to learn about the <code>--as</code> argument.  It made it <em>really</em> easy to test the permissions for my service account, and I could be confident I was giving it the minimum required permissions.</p>
+
+  </div>
+</div>
+
+
+  <footer class="text-center text-sm text-gray-500 mx-auto max-w-screen-md mt-4 border-solid border-t-[1px] border-amber-600 pb-2 mb-20">
+    <p class="mt-4">Copywrite &copy; Darren Clark 2018 - 2022</p>
+    <p>
+      <a rel="license" class="underline" href="http://creativecommons.org/licenses/by-sa/2.5/ca/">CC BY-SA 2.5 CA</a> (content) /
+      <a rel="license" class="underline" href="https://unlicense.org">Unlicense</a> (code snippets)
+    </p>
+  </div>
+</body>
+</html>

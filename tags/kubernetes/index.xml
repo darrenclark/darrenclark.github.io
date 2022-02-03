@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubernetes on Darren Clark</title>
+    <link>https://darrenclark.ca/tags/kubernetes/</link>
+    <description>Recent content in kubernetes on Darren Clark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 15 Nov 2020 11:27:38 -0500</lastBuildDate><atom:link href="https://darrenclark.ca/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How can I test Kubernetes permissions?</title>
+      <link>https://darrenclark.ca/how-can-i-test-kubernetes-permissions/</link>
+      <pubDate>Sun, 15 Nov 2020 11:27:38 -0500</pubDate>
+      
+      <guid>https://darrenclark.ca/how-can-i-test-kubernetes-permissions/</guid>
+      <description>Or, “impersonating a service account with &lt;code&gt;kubectl&lt;/code&gt; to verify permissions are correctly configured”</description>
+    </item>
+    
+  </channel>
+</rss>

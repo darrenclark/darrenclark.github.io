@@ -1,0 +1,145 @@
+<html>
+<head>
+  
+  
+  
+    
+    
+  
+
+  <title>Copying and pasting to terminal programs on macOS | Darren Clark</title>
+
+  
+  
+  <link rel=stylesheet type="text/css" href="https://darrenclark.ca/style.95c4f7f9046e280d078a558a68b0186395789e6e1b5fc06833f3e6c8fae188c06a456cecf7aa8291a3724e8e9c66599cfbb3a00bcc84c6609588a82e996b2a6c.css"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical" content="https://darrenclark.ca/copying-and-pasting-to-terminal-programs-on-macos/">
+
+  <meta property="og:title" content="Copying and pasting to terminal programs on macOS">
+  <meta property="og:site_name" content="Darren Clark">
+  <meta property="og:url" content="https://darrenclark.ca/copying-and-pasting-to-terminal-programs-on-macos/">
+  <meta property="og:image" content="https://darrenclark.ca/apple-touch-icon.png" />
+
+  
+  <meta property="og:type" content="article">
+  <meta property="og:description" content="Two of my favourite shell commands on macOS are pbcopy and pbpaste.">
+  <meta name="description" content="Two of my favourite shell commands on macOS are pbcopy and pbpaste.">
+  
+
+
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131464577-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-131464577-1');
+  </script>
+
+</head>
+<body class="bg-[#f4f4f4] font-sans leading-normal tracking-normal">
+  <nav class="flex flex-row mx-auto items-baseline max-w-screen-md mt-4 border-solid border-b-[1px] border-amber-600 px-2 md:px-2 lg:px-0 md:pb-2">
+    
+      <div class="flex-grow font-extrabold text-xl">
+        <a href="/">Darren Clark</a>
+      </div>
+    
+    <ul class="flex-shrink">
+      <li class="inline-block mr-2">
+        <a href="/articles">Articles</a>
+      </li>
+    </ul>
+  </nav>
+  
+
+<div class="mx-auto max-w-screen-md mt-4">
+  <h1 class="text-4xl font-bold mb-3 mt-20 text-center">Copying and pasting to terminal programs on macOS</h1>
+  <p class="text-center text-sm">
+    Published on Nov 21, 2020 in 
+    
+        <a class="text-orange-800 font-light" href="https://darrenclark.ca/tags/shell/">#shell</a>
+    
+  </p>
+
+  <div class="markdown text-justify mx-4 my-20">
+    <p>Two of my favourite shell commands on macOS are <code>pbcopy</code> and <code>pbpaste</code>.</p>
+<p><code>pbcopy</code> <em>(&ldquo;pasteboard-copy&rdquo;)</em> copies text from standard input, just like
+Command-C.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="nb">echo</span> <span class="s2">&#34;Hello, world&#34;</span> <span class="p">|</span> pbcopy
+</code></pre></div><p>Similarily, <code>pbpaste</code> <em>(&ldquo;pasteboard-paste&rdquo;)</em> pastes the contents of the
+pasteboard to standard output - like Command-V.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">pbpaste
+<span class="c1"># Hello, world</span>
+</code></pre></div><p>This is the same pasteboard the rest of macOS uses, making it easy to copy/paste
+text to and from GUI programs.</p>
+<p>The real beauty of these two becomes apparent when we compose them with other
+tools, just like the <a href="https://en.wikipedia.org/wiki/Unix_philosophy">founders of Unix intended</a>.</p>
+<p>Read on for some of my favourite use cases, pulled straight from my shell
+history.</p>
+<h1 id="formatting-json">Formatting JSON</h1>
+<p>Using <a href="https://stedolan.github.io/jq/"><code>jq</code></a> to format JSON:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># Pasteboard before:</span>
+<span class="c1"># {&#34;x&#34;:1  , &#34;y&#34; :  2, &#34;z&#34;:3}</span>
+
+pbpaste <span class="p">|</span> jq . <span class="p">|</span> pbcopy
+
+<span class="c1"># Pasteboard after:</span>
+<span class="c1"># {</span>
+<span class="c1">#   &#34;x&#34;: 1,</span>
+<span class="c1">#   &#34;y&#34;: 2,</span>
+<span class="c1">#   &#34;z&#34;: 3</span>
+<span class="c1"># }</span>
+</code></pre></div><h1 id="decoding-base64">Decoding base64</h1>
+<p>For peeking inside random base64 encoded values:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># Pasteboard:</span>
+<span class="c1"># SGVsbG8sIHdvcmxkIQo=</span>
+
+pbpaste <span class="p">|</span> base64 -D
+<span class="c1"># Hello, world!</span>
+</code></pre></div><h1 id="uppercasing-a-string">Uppercasing a string</h1>
+<p>Read as:</p>
+<ul>
+<li>transform - <code>tr</code></li>
+<li>all lowercase characters - <code>'[[:lower:]]'</code></li>
+<li>to uppercase - <code>'[[:upper:]]'</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># Pasteboard before:</span>
+<span class="c1"># c600a378-2055-4f2f-82a2-fd00a6ea9629</span>
+
+pbpaste <span class="p">|</span> tr <span class="s1">&#39;[[:lower:]]&#39;</span> <span class="s1">&#39;[[:upper:]]&#39;</span> <span class="p">|</span> pbcopy
+
+<span class="c1"># Pasteboard after:</span>
+<span class="c1"># C600A378-2055-4F2F-82A2-FD00A6EA9629</span>
+</code></pre></div><h1 id="how-long-is-that-string">How long is that string?</h1>
+<p>The <code>wc</code> (word count) command can be used to count characters (<code>-c</code>), lines
+(<code>-l</code>), and of course, words (<code>-w</code>).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># Pasteboard contents:</span>
+<span class="c1"># The quick brown fox jumps over the lazy dog</span>
+
+pbpaste <span class="p">|</span> wc -w
+<span class="c1">#      9</span>
+
+pbpaste <span class="p">|</span> wc -c
+<span class="c1">#      43</span>
+</code></pre></div><h1 id="and-my-favourite-x--x">And my favourite, <code>x = x</code></h1>
+<p>Got a bunch of pesky text formatting in your pasteboard? Want to get rid of it?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">pbpaste <span class="p">|</span> pbcopy
+</code></pre></div><hr>
+<p>Thanks for reading!  Got any novel use cases for <code>pbcopy</code>/<code>pbpaste</code>? I&rsquo;d love to
+hear about them, I&rsquo;m <a href="https://twitter.com/darrenclark">@darrenclark</a> on Twitter.</p>
+
+  </div>
+</div>
+
+
+  <footer class="text-center text-sm text-gray-500 mx-auto max-w-screen-md mt-4 border-solid border-t-[1px] border-amber-600 pb-2 mb-20">
+    <p class="mt-4">Copywrite &copy; Darren Clark 2018 - 2022</p>
+    <p>
+      <a rel="license" class="underline" href="http://creativecommons.org/licenses/by-sa/2.5/ca/">CC BY-SA 2.5 CA</a> (content) /
+      <a rel="license" class="underline" href="https://unlicense.org">Unlicense</a> (code snippets)
+    </p>
+  </div>
+</body>
+</html>

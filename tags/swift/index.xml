@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>swift on Darren Clark</title>
+    <link>https://darrenclark.ca/tags/swift/</link>
+    <description>Recent content in swift on Darren Clark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 27 Dec 2018 18:27:36 +0000</lastBuildDate><atom:link href="https://darrenclark.ca/tags/swift/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Coalescing Updates With Dispatch Sources</title>
+      <link>https://darrenclark.ca/coalescing-updates-with-dispatch-sources/</link>
+      <pubDate>Thu, 27 Dec 2018 18:27:36 +0000</pubDate>
+      
+      <guid>https://darrenclark.ca/coalescing-updates-with-dispatch-sources/</guid>
+      <description>Today we use &lt;code&gt;DispatchSourceUserDataAdd&lt;/code&gt; to coalesce calls to &lt;code&gt;UITableView.reloadData()&lt;/code&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

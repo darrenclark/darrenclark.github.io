@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Darren Clark</title>
+    <link>https://darrenclark.ca/tags/</link>
+    <description>Recent content in Tags on Darren Clark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 21 Nov 2020 17:43:07 -0500</lastBuildDate><atom:link href="https://darrenclark.ca/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>shell</title>
+      <link>https://darrenclark.ca/tags/shell/</link>
+      <pubDate>Sat, 21 Nov 2020 17:43:07 -0500</pubDate>
+      
+      <guid>https://darrenclark.ca/tags/shell/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes</title>
+      <link>https://darrenclark.ca/tags/kubernetes/</link>
+      <pubDate>Sun, 15 Nov 2020 11:27:38 -0500</pubDate>
+      
+      <guid>https://darrenclark.ca/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>swift</title>
+      <link>https://darrenclark.ca/tags/swift/</link>
+      <pubDate>Thu, 27 Dec 2018 18:27:36 +0000</pubDate>
+      
+      <guid>https://darrenclark.ca/tags/swift/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

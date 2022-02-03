@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Darren Clark</title>
+    <link>https://darrenclark.ca/</link>
+    <description>Recent content on Darren Clark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 21 Nov 2020 17:43:07 -0500</lastBuildDate><atom:link href="https://darrenclark.ca/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Copying and pasting to terminal programs on macOS</title>
+      <link>https://darrenclark.ca/copying-and-pasting-to-terminal-programs-on-macos/</link>
+      <pubDate>Sat, 21 Nov 2020 17:43:07 -0500</pubDate>
+      
+      <guid>https://darrenclark.ca/copying-and-pasting-to-terminal-programs-on-macos/</guid>
+      <description>Two of my favourite shell commands on macOS are &lt;code&gt;pbcopy&lt;/code&gt; and &lt;code&gt;pbpaste&lt;/code&gt;.</description>
+    </item>
+    
+    <item>
+      <title>How can I test Kubernetes permissions?</title>
+      <link>https://darrenclark.ca/how-can-i-test-kubernetes-permissions/</link>
+      <pubDate>Sun, 15 Nov 2020 11:27:38 -0500</pubDate>
+      
+      <guid>https://darrenclark.ca/how-can-i-test-kubernetes-permissions/</guid>
+      <description>Or, “impersonating a service account with &lt;code&gt;kubectl&lt;/code&gt; to verify permissions are correctly configured”</description>
+    </item>
+    
+    <item>
+      <title>Coalescing Updates With Dispatch Sources</title>
+      <link>https://darrenclark.ca/coalescing-updates-with-dispatch-sources/</link>
+      <pubDate>Thu, 27 Dec 2018 18:27:36 +0000</pubDate>
+      
+      <guid>https://darrenclark.ca/coalescing-updates-with-dispatch-sources/</guid>
+      <description>Today we use &lt;code&gt;DispatchSourceUserDataAdd&lt;/code&gt; to coalesce calls to &lt;code&gt;UITableView.reloadData()&lt;/code&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

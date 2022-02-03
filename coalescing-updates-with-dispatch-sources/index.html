@@ -1,0 +1,262 @@
+<html>
+<head>
+  
+  
+  
+    
+    
+  
+
+  <title>Coalescing Updates With Dispatch Sources | Darren Clark</title>
+
+  
+  
+  <link rel=stylesheet type="text/css" href="https://darrenclark.ca/style.95c4f7f9046e280d078a558a68b0186395789e6e1b5fc06833f3e6c8fae188c06a456cecf7aa8291a3724e8e9c66599cfbb3a00bcc84c6609588a82e996b2a6c.css"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical" content="https://darrenclark.ca/coalescing-updates-with-dispatch-sources/">
+
+  <meta property="og:title" content="Coalescing Updates With Dispatch Sources">
+  <meta property="og:site_name" content="Darren Clark">
+  <meta property="og:url" content="https://darrenclark.ca/coalescing-updates-with-dispatch-sources/">
+  <meta property="og:image" content="https://darrenclark.ca/apple-touch-icon.png" />
+
+  
+  <meta property="og:type" content="article">
+  <meta property="og:description" content="Today we use DispatchSourceUserDataAdd to coalesce calls to UITableView.reloadData()">
+  <meta name="description" content="Today we use DispatchSourceUserDataAdd to coalesce calls to UITableView.reloadData()">
+  
+
+
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131464577-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-131464577-1');
+  </script>
+
+</head>
+<body class="bg-[#f4f4f4] font-sans leading-normal tracking-normal">
+  <nav class="flex flex-row mx-auto items-baseline max-w-screen-md mt-4 border-solid border-b-[1px] border-amber-600 px-2 md:px-2 lg:px-0 md:pb-2">
+    
+      <div class="flex-grow font-extrabold text-xl">
+        <a href="/">Darren Clark</a>
+      </div>
+    
+    <ul class="flex-shrink">
+      <li class="inline-block mr-2">
+        <a href="/articles">Articles</a>
+      </li>
+    </ul>
+  </nav>
+  
+
+<div class="mx-auto max-w-screen-md mt-4">
+  <h1 class="text-4xl font-bold mb-3 mt-20 text-center">Coalescing Updates With Dispatch Sources</h1>
+  <p class="text-center text-sm">
+    Published on Dec 27, 2018 in 
+    
+        <a class="text-orange-800 font-light" href="https://darrenclark.ca/tags/swift/">#swift</a>
+    
+  </p>
+
+  <div class="markdown text-justify mx-4 my-20">
+    <p>Today I wanted to look at using <code>DispatchSourceUserDataAdd</code> to coalesce calls to (potentially expensive) functions like <code>UITableView.reloadData()</code>.</p>
+<p>If you want to follow along in Xcode, feel free to copy/paste <a href="https://gist.github.com/darrenclark/fa32cb5953ae6ccca16366b44098101a">this gist</a> into an iOS Playground.</p>
+<h1 id="background">Background</h1>
+<center>
+<img src="/images/2018-12-27-todo-list.png" alt="App screenshot" style="max-width: 280" />
+</center>
+<p>The example follows the patterns described in Apple&rsquo;s documentation on <a href="https://developer.apple.com/library/archive/documentation/General/Conceptual/DevPedia-CocoaCore/MVC.html">Model-View-Controller</a>.</p>
+<p>Our &ldquo;Model&rdquo; layer is compromised of the <code>TodoList</code> and <code>TodoListItem</code> classes.  In reaction to user input, we can mark items as completed by setting the <code>TodoListItem.completed</code> property to <code>true</code>.  And, we can listen for changes by observing the <code>TodoListItemUpdated</code> notification.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">class</span> <span class="nc">TodoList</span> <span class="p">{</span>
+  <span class="kd">static</span> <span class="kd">let</span> <span class="nv">shared</span> <span class="p">=</span> <span class="n">TodoList</span><span class="p">()</span>
+
+  <span class="kd">var</span> <span class="nv">items</span><span class="p">:</span> <span class="p">[</span><span class="n">TodoListItem</span><span class="p">]</span> <span class="p">=</span> <span class="p">[</span> <span class="cm">/*...*/</span> <span class="p">]</span>
+
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="nc">NSNotification</span><span class="p">.</span><span class="n">Name</span> <span class="p">{</span>
+  <span class="kd">static</span> <span class="kd">let</span> <span class="nv">todoListItemUpdated</span> <span class="p">=</span> <span class="n">NSNotification</span><span class="p">.</span><span class="n">Name</span><span class="p">(</span><span class="s">&#34;TodoListItemUpdated&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">TodoListItem</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nv">title</span><span class="p">:</span> <span class="nb">String</span>
+
+  <span class="kd">var</span> <span class="nv">completed</span><span class="p">:</span> <span class="nb">Bool</span> <span class="p">=</span> <span class="kc">false</span> <span class="p">{</span>
+    <span class="kr">didSet</span> <span class="p">{</span>
+      <span class="n">NotificationCenter</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">post</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="p">.</span><span class="n">todoListItemUpdated</span><span class="p">,</span> <span class="n">object</span><span class="p">:</span> <span class="kc">self</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div><p>Our &ldquo;Controller&rdquo; layer is a subclass of <code>UITableViewController</code>.  It gets data from our model (<code>TodoList</code>) and displays it in a table view.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">class</span> <span class="nc">ViewController</span><span class="p">:</span> <span class="n">UITableViewController</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+
+  <span class="kr">override</span> <span class="kd">func</span> <span class="nf">tableView</span><span class="p">(</span><span class="kc">_</span> <span class="n">tableView</span><span class="p">:</span> <span class="n">UITableView</span><span class="p">,</span> <span class="n">numberOfRowsInSection</span> <span class="n">section</span><span class="p">:</span> <span class="nb">Int</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">TodoList</span><span class="p">.</span><span class="n">shared</span><span class="p">.</span><span class="n">items</span><span class="p">.</span><span class="bp">count</span>
+  <span class="p">}</span>
+
+  <span class="kr">override</span> <span class="kd">func</span> <span class="nf">tableView</span><span class="p">(</span><span class="kc">_</span> <span class="n">tableView</span><span class="p">:</span> <span class="n">UITableView</span><span class="p">,</span> <span class="n">cellForRowAt</span> <span class="n">indexPath</span><span class="p">:</span> <span class="n">IndexPath</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">UITableViewCell</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nv">cell</span> <span class="p">=</span> <span class="n">tableView</span><span class="p">.</span><span class="n">dequeueReusableCell</span><span class="p">(</span><span class="n">withIdentifier</span><span class="p">:</span> <span class="s">&#34;Cell&#34;</span><span class="p">,</span> <span class="k">for</span><span class="p">:</span> <span class="n">indexPath</span><span class="p">)</span>
+    <span class="kd">let</span> <span class="nv">item</span> <span class="p">=</span> <span class="n">TodoList</span><span class="p">.</span><span class="n">shared</span><span class="p">.</span><span class="n">items</span><span class="p">[</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">]</span>
+    <span class="c1">// configure cell ...</span>
+    <span class="k">return</span> <span class="n">cell</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div><p>When a user taps an item, we <a href="https://github.com/apple/swift-evolution/blob/master/proposals/0199-bool-toggle.md">toggle</a> its <code>completed</code> property.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-swift" data-lang="swift">  <span class="kr">override</span> <span class="kd">func</span> <span class="nf">tableView</span><span class="p">(</span><span class="kc">_</span> <span class="n">tableView</span><span class="p">:</span> <span class="n">UITableView</span><span class="p">,</span> <span class="n">didSelectRowAt</span> <span class="n">indexPath</span><span class="p">:</span> <span class="n">IndexPath</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">TodoList</span><span class="p">.</span><span class="n">shared</span><span class="p">.</span><span class="n">items</span><span class="p">[</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">].</span><span class="n">completed</span><span class="p">.</span><span class="n">toggle</span><span class="p">()</span>
+  <span class="p">}</span>
+</code></pre></div><p>In turn, the <code>TodoListItem</code> posts the <code>TodoListItemUpdated</code> notification, and our view controller reloads our table view, updating the UI for the user.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">class</span> <span class="nc">ViewController</span><span class="p">:</span> <span class="n">UITableViewController</span> <span class="p">{</span>
+
+  <span class="kr">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">NotificationCenter</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">addObserver</span><span class="p">(</span>
+      <span class="kc">self</span><span class="p">,</span>
+      <span class="n">selector</span><span class="p">:</span> <span class="k">#selector</span><span class="p">(</span><span class="n">todoListItemUpdated</span><span class="p">),</span>
+      <span class="n">name</span><span class="p">:</span> <span class="p">.</span><span class="n">todoListItemUpdated</span><span class="p">,</span>
+      <span class="n">object</span><span class="p">:</span> <span class="kc">nil</span>
+    <span class="p">)</span>
+
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+
+  <span class="kr">@objc</span> <span class="kd">func</span> <span class="nf">todoListItemUpdated</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">tableView</span><span class="p">.</span><span class="n">reloadData</span><span class="p">()</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div><p>And everything works great.  Since our <code>ViewController</code> observes changes to our model layer directly (via <code>NotificationCenter</code>), we never have to worry about our UI getting out of sync with our data.</p>
+<p>As a convenience to our users, we decide to add a shortcut to mark all items as completed.  Firstly, we update our <code>TodoList</code> class with a function to mark all items completed.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">class</span> <span class="nc">TodoList</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+
+  <span class="kd">func</span> <span class="nf">markAllAsCompleted</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="k">in</span> <span class="n">items</span> <span class="p">{</span>
+      <span class="n">item</span><span class="p">.</span><span class="n">completed</span> <span class="p">=</span> <span class="kc">true</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>And wire up a button to call <code>markAllAsCompleted()</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">class</span> <span class="nc">ViewController</span><span class="p">:</span> <span class="n">UITableViewController</span> <span class="p">{</span>
+  <span class="kr">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">navigationItem</span><span class="p">.</span><span class="n">rightBarButtonItem</span> <span class="p">=</span> <span class="n">UIBarButtonItem</span><span class="p">(</span>
+      <span class="n">title</span><span class="p">:</span> <span class="s">&#34;Complete All&#34;</span><span class="p">,</span>
+      <span class="n">style</span><span class="p">:</span> <span class="p">.</span><span class="n">plain</span><span class="p">,</span>
+      <span class="n">target</span><span class="p">:</span> <span class="kc">self</span><span class="p">,</span>
+      <span class="n">action</span><span class="p">:</span> <span class="k">#selector</span><span class="p">(</span><span class="n">completeAll</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+
+  <span class="kr">@objc</span> <span class="kd">func</span> <span class="nf">completeAll</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">TodoList</span><span class="p">.</span><span class="n">shared</span><span class="p">.</span><span class="n">markAllAsCompleted</span><span class="p">()</span>
+  <span class="p">}</span>
+
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div><p>Since our <code>ViewController</code> observes changes to our model via <code>NotificationCenter</code>, it automatically updates the UI in response to the user tapping the &lsquo;Complete All&rsquo; button.</p>
+<h1 id="the-problem">The Problem</h1>
+<p>Some of you may have already noticed one small issue.</p>
+<ol>
+<li>The <code>markAllAsCompleted()</code> function sets <code>completed = true</code> on all of our <code>TodoListItem</code>s</li>
+<li>Each <code>TodoListItem</code> posts a <code>TodoListItemUpdated</code> notification</li>
+<li>For each <code>TodoListItemUpdated</code> notification, our <code>ViewController</code> calls <code>tableView.reloadData()</code></li>
+</ol>
+<p>To confirm this, I&rsquo;ve added a <code>print</code> statement when <code>tableView.reloadData()</code> is called.</p>
+<center>
+<img src="/images/2018-12-27-broken.png" alt="Xcode screenshot demonstrating the bug" />
+</center>
+<p>Sure enough!  Tapping &lsquo;Complete All&rsquo; printed out five messages, one for each item we have.</p>
+<p>Perhaps not a big issue if we have one, two, or even five items, but it could be if we have fifty or one hundred items.  While our code is simple and fairly straightforward, we are unnecessary calling <code>tableView.reloadData()</code> a lot!  We should take a look into this before shipping our app.</p>
+<h1 id="the-solution">The Solution</h1>
+<p>Ideally we want to coalesce all of changes into a single call to <code>tableView.reloadData()</code>.  Thankfully, Grand Central Dispatch provides us the perfect tool for the job - <a href="https://developer.apple.com/documentation/dispatch/dispatchsourceuserdataadd"><code>DispatchSourceUserDataAdd</code></a>.</p>
+<h2 id="dispatch-sources">Dispatch Sources</h2>
+<p>Dispatch Sources are special objects that schedule blocks to run when certain low level events happen.  For example, <a href="https://developer.apple.com/documentation/dispatch/dispatchsourcesignal"><code>DispatchSourceSignal</code></a> will enqueue a block on a given <code>DispatchQueue</code> when the current process receives certain Unix signals.  As many of these are wrapped up in higher level APIs in <code>Foundation.framework</code> or elsewhere, it&rsquo;s pretty rare to use Dispatch Sources directly.  However, there are a couple Dispatch Sources that are quite useful for us:</p>
+<ul>
+<li><a href="https://developer.apple.com/documentation/dispatch/dispatchsourceuserdataadd"><code>DispatchSourceUserDataAdd</code></a></li>
+<li><a href="https://developer.apple.com/documentation/dispatch/dispatchsourceuserdataor"><code>DispatchSourceUserDataOr</code></a></li>
+<li><a href="https://developer.apple.com/documentation/dispatch/dispatchsourceuserdatareplace"><code>DispatchSourceUserDataReplace</code></a> - at the time of this writing, this one isn&rsquo;t documented in the <a href="https://developer.apple.com/documentation/dispatch/dispatch_source_type_constants?language=objc">Objective-C documentation</a></li>
+</ul>
+<p>All three of these operate in roughly the same way:</p>
+<ul>
+<li>They all store a <code>UInt</code> <em>user data</em></li>
+<li>The <em>user data</em> can be manipulated by us (the user of this API) via these methods (respectively):
+<ul>
+<li><code>func add(data: UInt)</code> - increments the <em>user data</em> by <code>data</code></li>
+<li><code>func merge(data: UInt)</code> - bitwise ORs the <em>user data</em> with <code>data</code></li>
+<li><code>func replace(data: UInt)</code> - sets the <em>user data</em> to <code>data</code></li>
+</ul>
+</li>
+<li>When the <em>user data</em> becomes non-zero, it enqueues a block to run on a Dispatch Queue</li>
+<li>After the block is run, the <em>user data</em> is set back to zero</li>
+</ul>
+<p>Of particular interest to us is the fact that a block is only enqueued when the <em>user data</em> becomes non-zero, not each time it is updated.</p>
+<h2 id="using-dispatchsourceuserdataadd">Using <code>DispatchSourceUserDataAdd</code></h2>
+<p>Despite being advertised as &ldquo;low-level&rdquo;, <code>DispatchSourceUserDataAdd</code> is fairly straightforward.  First we create one via the <code>DispatchSource.makeUserDataAddSource(queue:)</code> function.  We&rsquo;ll put this in our <code>ViewController</code> class.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">class</span> <span class="nc">ViewController</span><span class="p">:</span> <span class="n">UITableViewController</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nv">dispatchSource</span> <span class="p">=</span> <span class="n">DispatchSource</span><span class="p">.</span><span class="n">makeUserDataAddSource</span><span class="p">(</span><span class="n">queue</span><span class="p">:</span> <span class="p">.</span><span class="n">main</span><span class="p">)</span>
+   
+  <span class="c1">// ...</span>
+</code></pre></div><p>Then we need to set an event handler, a.k.a. the block that will be queued when the <em>user data</em> becomes non-zero.</p>
+<p>After that, we&rsquo;ll call <code>dispatchSource.resume()</code> to &ldquo;start&rdquo; the dispatch source (by default, dispatch sources started in a suspended state)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">class</span> <span class="nc">ViewController</span><span class="p">:</span> <span class="n">UITableViewController</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nv">dispatchSource</span> <span class="p">=</span> <span class="n">DispatchSource</span><span class="p">.</span><span class="n">makeUserDataAddSource</span><span class="p">(</span><span class="n">queue</span><span class="p">:</span> <span class="p">.</span><span class="n">main</span><span class="p">)</span>
+
+  <span class="kr">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="n">dispatchSource</span><span class="p">.</span><span class="n">setEventHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">:</span> <span class="p">{</span> <span class="p">[</span><span class="kr">weak</span> <span class="kc">self</span><span class="p">]</span> <span class="k">in</span>
+      <span class="bp">print</span><span class="p">(</span><span class="s">&#34;tableView.reloadData()&#34;</span><span class="p">)</span>
+      <span class="kc">self</span><span class="p">?.</span><span class="n">tableView</span><span class="p">.</span><span class="n">reloadData</span><span class="p">()</span>
+    <span class="p">})</span>
+    <span class="n">dispatchSource</span><span class="p">.</span><span class="n">resume</span><span class="p">()</span>
+
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+</code></pre></div><p>Finally, we update our <code>todoListItemUpdated()</code> function to use the dispatch source instead of calling <code>tableView.reloadData()</code> directly.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">class</span> <span class="nc">ViewController</span><span class="p">:</span> <span class="n">UITableViewController</span> <span class="p">{</span>
+
+  <span class="c1">// ...</span>
+
+  <span class="kr">@objc</span> <span class="kd">func</span> <span class="nf">todoListItemUpdated</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Previously:</span>
+    <span class="c1">//</span>
+    <span class="c1">//  print(&#34;tableView.reloadData()&#34;)</span>
+    <span class="c1">//  tableView.reloadData()</span>
+
+    <span class="n">dispatchSource</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="p">}</span>
+</code></pre></div><p>Let&rsquo;s give this a go in Xcode&hellip;</p>
+<center>
+<img src="/images/2018-12-27-fixed.png" alt="Xcode screenshot demonstrating that the bug is fixed" />
+</center>
+<p>Perfect! Our code only called <code>tableView.reloadData()</code> once, despite getting five <code>TodoListItemUpdated</code> notifications.</p>
+<h1 id="final-thoughts">Final Thoughts</h1>
+<p>I&rsquo;ve put the final code up in <a href="https://gist.github.com/darrenclark/7f8ef59097aa7ee7e6f79d301fac8ec0">this gist</a>.</p>
+<p>Before using this elsewhere in our app, we may want to extract this into an extension, base class, or even another class to make it a little more ergonomic.  Rather than calling a function like <code>add(data: 1)</code> to signal a <code>reloadData()</code> is needed, it&rsquo;d be much nicer to call a function named <code>setNeedsReloadData()</code> or similar.</p>
+<p>Also, depending on our use cases, we might want to take a look at <code>DispatchSourceUserDataOr</code>.  Since it combines data together via a bitwise OR, we could use a bitmask to signal different types of updates are needed, rather than doing a full <code>reloadData()</code> each time.</p>
+<p>Finally, I&rsquo;d encourage you to read over <a href="https://developer.apple.com/documentation/DISPATCH">Apple&rsquo;s Dispatch documentation</a>, Grand Central Dispatch has quite a few interesting APIs in it.</p>
+
+  </div>
+</div>
+
+
+  <footer class="text-center text-sm text-gray-500 mx-auto max-w-screen-md mt-4 border-solid border-t-[1px] border-amber-600 pb-2 mb-20">
+    <p class="mt-4">Copywrite &copy; Darren Clark 2018 - 2022</p>
+    <p>
+      <a rel="license" class="underline" href="http://creativecommons.org/licenses/by-sa/2.5/ca/">CC BY-SA 2.5 CA</a> (content) /
+      <a rel="license" class="underline" href="https://unlicense.org">Unlicense</a> (code snippets)
+    </p>
+  </div>
+</body>
+</html>
