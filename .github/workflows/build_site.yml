@@ -30,6 +30,7 @@ jobs:
 
       - name: Prep output directory
         run: |
+          git branch gh-pages origin/gh-pages
           git clone --branch=gh-pages . /tmp/out
           cp ./CNAME /tmp/out
 
