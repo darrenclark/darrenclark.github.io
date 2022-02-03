@@ -28,6 +28,11 @@ jobs:
           tar -xzf hugo.tar.gz
           mv hugo /usr/local/bin
 
+      - name: Configure git
+        run: |
+          git config --global user.name "Github Actions"
+          git config --global user.email "github-actions@darrenclark.ca"
+
       - name: Prep output directory
         run: |
           git branch gh-pages origin/gh-pages
