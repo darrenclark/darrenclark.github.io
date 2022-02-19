@@ -3,10 +3,19 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://darrenclark.ca/</loc>
-    <lastmod>2020-11-21T17:43:07-05:00</lastmod>
+    <lastmod>2022-02-19T11:30:00-05:00</lastmod>
   </url><url>
     <loc>https://darrenclark.ca/articles/</loc>
-    <lastmod>2020-11-21T17:43:07-05:00</lastmod>
+    <lastmod>2022-02-19T11:30:00-05:00</lastmod>
+  </url><url>
+    <loc>https://darrenclark.ca/commands-args-and-entrypoints-in-kubernetes/</loc>
+    <lastmod>2022-02-19T11:30:00-05:00</lastmod>
+  </url><url>
+    <loc>https://darrenclark.ca/tags/kubernetes/</loc>
+    <lastmod>2022-02-19T11:30:00-05:00</lastmod>
+  </url><url>
+    <loc>https://darrenclark.ca/tags/</loc>
+    <lastmod>2022-02-19T11:30:00-05:00</lastmod>
   </url><url>
     <loc>https://darrenclark.ca/copying-and-pasting-to-terminal-programs-on-macos/</loc>
     <lastmod>2020-11-21T17:43:07-05:00</lastmod>
@@ -14,13 +23,7 @@
     <loc>https://darrenclark.ca/tags/shell/</loc>
     <lastmod>2020-11-21T17:43:07-05:00</lastmod>
   </url><url>
-    <loc>https://darrenclark.ca/tags/</loc>
-    <lastmod>2020-11-21T17:43:07-05:00</lastmod>
-  </url><url>
     <loc>https://darrenclark.ca/how-can-i-test-kubernetes-permissions/</loc>
-    <lastmod>2020-11-15T11:27:38-05:00</lastmod>
-  </url><url>
-    <loc>https://darrenclark.ca/tags/kubernetes/</loc>
     <lastmod>2020-11-15T11:27:38-05:00</lastmod>
   </url><url>
     <loc>https://darrenclark.ca/coalescing-updates-with-dispatch-sources/</loc>

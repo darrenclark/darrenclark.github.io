@@ -6,7 +6,20 @@
     <description>Recent content in Articles on Darren Clark</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 21 Nov 2020 17:43:07 -0500</lastBuildDate><atom:link href="https://darrenclark.ca/articles/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 19 Feb 2022 11:30:00 -0500</lastBuildDate><atom:link href="https://darrenclark.ca/articles/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Commands, args, and ENTRYPOINTs in Kubernetes</title>
+      <link>https://darrenclark.ca/commands-args-and-entrypoints-in-kubernetes/</link>
+      <pubDate>Sat, 19 Feb 2022 11:30:00 -0500</pubDate>
+      
+      <guid>https://darrenclark.ca/commands-args-and-entrypoints-in-kubernetes/</guid>
+      <description>Perhaps one of the most perplexing parts of starting a Docker container in Kubernetes is the variety of options for specifying the command to be run.
+A Dockerfile can include one or both of CMD and ENTRYPOINT instructions:
+FROMalpineCMD [&amp;#34;echo&amp;#34;, &amp;#34;hello, world!&amp;#34;]FROMalpineENTRYPOINT [&amp;#34;echo&amp;#34;]CMD [&amp;#34;hello, world!&amp;#34;]FROMalpineENTRYPOINT [&amp;#34;echo&amp;#34;, &amp;#34;hello, world!&amp;#34;]Similarly, Kubernetes has command and args fields:
+apiVersion:v1kind:Podmetadata:name:hello-worldspec:containers:- name:hello-worldimage:alpinecommand:[&amp;#34;echo&amp;#34;]args:[&amp;#34;hello, world!&amp;#34;]restartPolicy:OnFailureFrustratingly, the terminology doesn&amp;rsquo;t quite line up between the two:
+    command arguments     Docker ENTRYPOINT CMD   Kubernetes command args    NOTE: In the cases where command or args isn&amp;rsquo;t set, Kubernetes will use the equivalent instruction from the Dockerfile.</description>
+    </item>
+    
     <item>
       <title>Copying and pasting to terminal programs on macOS</title>
       <link>https://darrenclark.ca/copying-and-pasting-to-terminal-programs-on-macos/</link>
