@@ -15,7 +15,7 @@ Command-C.
 echo "Hello, world" | pbcopy
 ```
 
-Similarily, `pbpaste` *("pasteboard-paste")* pastes the contents of the
+Similarly, `pbpaste` *("pasteboard-paste")* pastes the contents of the
 pasteboard to standard output - like Command-V.
 
 ```sh
