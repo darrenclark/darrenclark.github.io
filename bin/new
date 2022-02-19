@@ -1,0 +1,5 @@
+#!/bin/sh
+
+slug="${1:?Expected a post slug}"
+
+hugo new articles/$(date '+%Y-%m-%d')-$slug.md

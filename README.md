@@ -2,6 +2,8 @@
 
 ## Details
 
+- `bin/new some-slug  to create a new post
+
 - `bin/watch` for development server
 
 - `bin/build` to build site
