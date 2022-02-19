@@ -106,7 +106,7 @@
   }
 
   .markdown .highlight code {
-    @apply bg-inherit;
+    @apply bg-inherit px-0;
   }
 
   .markdown blockquote {
@@ -127,6 +127,14 @@
 
   .markdown hr {
     @apply mx-auto my-8 w-2/3 border-solid border-t-2 border-gray-300;
+  }
+
+  .markdown table {
+    @apply table-auto my-8;
+  }
+
+  .markdown td, .markdown td {
+    @apply p-2;
   }
 }
 
