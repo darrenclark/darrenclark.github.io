@@ -70,12 +70,12 @@
     <p>Two of my favourite shell commands on macOS are <code>pbcopy</code> and <code>pbpaste</code>.</p>
 <p><code>pbcopy</code> <em>(&ldquo;pasteboard-copy&rdquo;)</em> copies text from standard input, just like
 Command-C.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="nb">echo</span> <span class="s2">&#34;Hello, world&#34;</span> <span class="p">|</span> pbcopy
-</code></pre></div><p>Similarly, <code>pbpaste</code> <em>(&ldquo;pasteboard-paste&rdquo;)</em> pastes the contents of the
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;Hello, world&#34;</span> <span class="p">|</span> pbcopy
+</span></span></code></pre></div><p>Similarly, <code>pbpaste</code> <em>(&ldquo;pasteboard-paste&rdquo;)</em> pastes the contents of the
 pasteboard to standard output - like Command-V.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">pbpaste
-<span class="c1"># Hello, world</span>
-</code></pre></div><p>This is the same pasteboard the rest of macOS uses, making it easy to copy/paste
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">pbpaste
+</span></span><span class="line"><span class="cl"><span class="c1"># Hello, world</span>
+</span></span></code></pre></div><p>This is the same pasteboard the rest of macOS uses, making it easy to copy/paste
 text to and from GUI programs.</p>
 <p>The real beauty of these two becomes apparent when we compose them with other
 tools, just like the <a href="https://en.wikipedia.org/wiki/Unix_philosophy">founders of Unix intended</a>.</p>
@@ -83,53 +83,53 @@ tools, just like the <a href="https://en.wikipedia.org/wiki/Unix_philosophy">fou
 history.</p>
 <h1 id="formatting-json">Formatting JSON</h1>
 <p>Using <a href="https://stedolan.github.io/jq/"><code>jq</code></a> to format JSON:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># Pasteboard before:</span>
-<span class="c1"># {&#34;x&#34;:1  , &#34;y&#34; :  2, &#34;z&#34;:3}</span>
-
-pbpaste <span class="p">|</span> jq . <span class="p">|</span> pbcopy
-
-<span class="c1"># Pasteboard after:</span>
-<span class="c1"># {</span>
-<span class="c1">#   &#34;x&#34;: 1,</span>
-<span class="c1">#   &#34;y&#34;: 2,</span>
-<span class="c1">#   &#34;z&#34;: 3</span>
-<span class="c1"># }</span>
-</code></pre></div><h1 id="decoding-base64">Decoding base64</h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># Pasteboard before:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># {&#34;x&#34;:1  , &#34;y&#34; :  2, &#34;z&#34;:3}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pbpaste <span class="p">|</span> jq . <span class="p">|</span> pbcopy
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Pasteboard after:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># {</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   &#34;x&#34;: 1,</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   &#34;y&#34;: 2,</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   &#34;z&#34;: 3</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># }</span>
+</span></span></code></pre></div><h1 id="decoding-base64">Decoding base64</h1>
 <p>For peeking inside random base64 encoded values:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># Pasteboard:</span>
-<span class="c1"># SGVsbG8sIHdvcmxkIQo=</span>
-
-pbpaste <span class="p">|</span> base64 -D
-<span class="c1"># Hello, world!</span>
-</code></pre></div><h1 id="uppercasing-a-string">Uppercasing a string</h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># Pasteboard:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># SGVsbG8sIHdvcmxkIQo=</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pbpaste <span class="p">|</span> base64 -D
+</span></span><span class="line"><span class="cl"><span class="c1"># Hello, world!</span>
+</span></span></code></pre></div><h1 id="uppercasing-a-string">Uppercasing a string</h1>
 <p>Read as:</p>
 <ul>
 <li>transform - <code>tr</code></li>
 <li>all lowercase characters - <code>'[[:lower:]]'</code></li>
 <li>to uppercase - <code>'[[:upper:]]'</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># Pasteboard before:</span>
-<span class="c1"># c600a378-2055-4f2f-82a2-fd00a6ea9629</span>
-
-pbpaste <span class="p">|</span> tr <span class="s1">&#39;[[:lower:]]&#39;</span> <span class="s1">&#39;[[:upper:]]&#39;</span> <span class="p">|</span> pbcopy
-
-<span class="c1"># Pasteboard after:</span>
-<span class="c1"># C600A378-2055-4F2F-82A2-FD00A6EA9629</span>
-</code></pre></div><h1 id="how-long-is-that-string">How long is that string?</h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># Pasteboard before:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># c600a378-2055-4f2f-82a2-fd00a6ea9629</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pbpaste <span class="p">|</span> tr <span class="s1">&#39;[[:lower:]]&#39;</span> <span class="s1">&#39;[[:upper:]]&#39;</span> <span class="p">|</span> pbcopy
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Pasteboard after:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># C600A378-2055-4F2F-82A2-FD00A6EA9629</span>
+</span></span></code></pre></div><h1 id="how-long-is-that-string">How long is that string?</h1>
 <p>The <code>wc</code> (word count) command can be used to count characters (<code>-c</code>), lines
 (<code>-l</code>), and of course, words (<code>-w</code>).</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># Pasteboard contents:</span>
-<span class="c1"># The quick brown fox jumps over the lazy dog</span>
-
-pbpaste <span class="p">|</span> wc -w
-<span class="c1">#      9</span>
-
-pbpaste <span class="p">|</span> wc -c
-<span class="c1">#      43</span>
-</code></pre></div><h1 id="and-my-favourite-x--x">And my favourite, <code>x = x</code></h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># Pasteboard contents:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># The quick brown fox jumps over the lazy dog</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pbpaste <span class="p">|</span> wc -w
+</span></span><span class="line"><span class="cl"><span class="c1">#      9</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pbpaste <span class="p">|</span> wc -c
+</span></span><span class="line"><span class="cl"><span class="c1">#      43</span>
+</span></span></code></pre></div><h1 id="and-my-favourite-x--x">And my favourite, <code>x = x</code></h1>
 <p>Got a bunch of pesky text formatting in your pasteboard? Want to get rid of it?</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">pbpaste <span class="p">|</span> pbcopy
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">pbpaste <span class="p">|</span> pbcopy
+</span></span></code></pre></div><hr>
 <p>Thanks for reading!  Got any novel use cases for <code>pbcopy</code>/<code>pbpaste</code>? I&rsquo;d love to
 hear about them, I&rsquo;m <a href="https://twitter.com/darrenclark">@darrenclark</a> on Twitter.</p>
 
@@ -138,7 +138,7 @@ hear about them, I&rsquo;m <a href="https://twitter.com/darrenclark">@darrenclar
 
 
   <footer class="text-center text-sm text-gray-500 mx-auto max-w-screen-md mt-4 border-solid border-t-[1px] border-amber-600 pb-2 mb-20">
-    <p class="mt-4">Copywrite &copy; Darren Clark 2018 - 2023</p>
+    <p class="mt-4">&copy; 2024 Darren Clark</p>
     <p>
       <a rel="license" class="underline" href="http://creativecommons.org/licenses/by-sa/2.5/ca/">CC BY-SA 2.5 CA</a> (content) /
       <a rel="license" class="underline" href="https://unlicense.org">Unlicense</a> (code snippets)

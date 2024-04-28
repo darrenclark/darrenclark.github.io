@@ -26,14 +26,12 @@
   <meta property="og:type" content="article">
   <meta property="og:description" content="Perhaps one of the most perplexing parts of starting a Docker container in Kubernetes is the variety of options for specifying the command to be run.
 A Dockerfile can include one or both of CMD and ENTRYPOINT instructions:
-FROMalpineCMD [&#34;echo&#34;, &#34;hello, world!&#34;]FROMalpineENTRYPOINT [&#34;echo&#34;]CMD [&#34;hello, world!&#34;]FROMalpineENTRYPOINT [&#34;echo&#34;, &#34;hello, world!&#34;]Similarly, Kubernetes has command and args fields:
-apiVersion:v1kind:Podmetadata:name:hello-worldspec:containers:- name:hello-worldimage:alpinecommand:[&#34;echo&#34;]args:[&#34;hello, world!&#34;]restartPolicy:OnFailureFrustratingly, the terminology doesn&rsquo;t quite line up between the two:
-    command arguments     Docker ENTRYPOINT CMD   Kubernetes command args    NOTE: In the cases where command or args isn&rsquo;t set, Kubernetes will use the equivalent instruction from the Dockerfile.">
+FROM alpine CMD [&#34;echo&#34;, &#34;hello, world!&#34;] FROM alpine ENTRYPOINT [&#34;echo&#34;] CMD [&#34;hello, world!&#34;] FROM alpine ENTRYPOINT [&#34;echo&#34;, &#34;hello, world!&#34;] Similarly, Kubernetes has command and args fields:
+apiVersion: v1 kind: Pod metadata: name: hello-world spec: containers: - name: hello-world image: alpine command: [&#34;echo&#34;] args: [&#34;hello, world!">
   <meta name="description" content="Perhaps one of the most perplexing parts of starting a Docker container in Kubernetes is the variety of options for specifying the command to be run.
 A Dockerfile can include one or both of CMD and ENTRYPOINT instructions:
-FROMalpineCMD [&#34;echo&#34;, &#34;hello, world!&#34;]FROMalpineENTRYPOINT [&#34;echo&#34;]CMD [&#34;hello, world!&#34;]FROMalpineENTRYPOINT [&#34;echo&#34;, &#34;hello, world!&#34;]Similarly, Kubernetes has command and args fields:
-apiVersion:v1kind:Podmetadata:name:hello-worldspec:containers:- name:hello-worldimage:alpinecommand:[&#34;echo&#34;]args:[&#34;hello, world!&#34;]restartPolicy:OnFailureFrustratingly, the terminology doesn&rsquo;t quite line up between the two:
-    command arguments     Docker ENTRYPOINT CMD   Kubernetes command args    NOTE: In the cases where command or args isn&rsquo;t set, Kubernetes will use the equivalent instruction from the Dockerfile.">
+FROM alpine CMD [&#34;echo&#34;, &#34;hello, world!&#34;] FROM alpine ENTRYPOINT [&#34;echo&#34;] CMD [&#34;hello, world!&#34;] FROM alpine ENTRYPOINT [&#34;echo&#34;, &#34;hello, world!&#34;] Similarly, Kubernetes has command and args fields:
+apiVersion: v1 kind: Pod metadata: name: hello-world spec: containers: - name: hello-world image: alpine command: [&#34;echo&#34;] args: [&#34;hello, world!">
   
 
 
@@ -78,26 +76,26 @@ apiVersion:v1kind:Podmetadata:name:hello-worldspec:containers:- name:hello-world
     <p>Perhaps one of the most perplexing parts of starting a Docker container in
 Kubernetes is the variety of options for specifying the command to be run.</p>
 <p>A <code>Dockerfile</code> can include one or both of <code>CMD</code> and <code>ENTRYPOINT</code> instructions:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> alpine</span><span class="err">
-</span><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">,</span> <span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="err">
-</span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> alpine</span><span class="err">
-</span><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">]</span><span class="err">
-</span><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="err">
-</span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> alpine</span><span class="err">
-</span><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">,</span> <span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="err">
-</span></code></pre></div><p>Similarly, Kubernetes has <code>command</code> and <code>args</code> fields:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello-world</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello-world</span><span class="w">
-</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">alpine</span><span class="w">
-</span><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">]</span><span class="w">
-</span><span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="w">
-</span><span class="w">  </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">OnFailure</span><span class="w">
-</span></code></pre></div><p>Frustratingly, the terminology doesn&rsquo;t quite line up between the two:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> alpine</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">,</span> <span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> alpine</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">]</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> alpine</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">,</span> <span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></div><p>Similarly, Kubernetes has <code>command</code> and <code>args</code> fields:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello-world</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello-world</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">alpine</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">OnFailure</span><span class="w">
+</span></span></span></code></pre></div><p>Frustratingly, the terminology doesn&rsquo;t quite line up between the two:</p>
 <table>
 <thead>
 <tr>
@@ -153,41 +151,41 @@ we can override the default options by specifying <code>args</code> in our Kuber
 manifests.</p>
 <p>For example, here&rsquo;s a <code>Dockerfile</code> file using Python&rsquo;s
 <a href="https://docs.python.org/3/library/http.server.html">bundled web server</a>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> python:3-alpine</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /site</span><span class="err">
-</span><span class="err"></span><span class="k">COPY</span> index.html ./<span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;python3&#34;</span><span class="p">,</span> <span class="s2">&#34;-m&#34;</span><span class="p">,</span> <span class="s2">&#34;http.server&#34;</span><span class="p">]</span><span class="err">
-</span><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;8000&#34;</span><span class="p">]</span><span class="err">
-</span></code></pre></div><p>We can build and run this locally:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">docker build -t my-python-web-server:v1 .
-
-<span class="c1"># uses port 8000 from the Dockerfile</span>
-docker run -it -p8000:8000 my-python-web-server:v1
-
-<span class="c1"># and, we can override CMD to use a different port</span>
-docker run -it -p8123:8123 my-python-web-server:v1 <span class="m">8123</span>
-</code></pre></div><p>When we deploy this to Kubernetes, we can use <code>args</code> to easily set a port
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> python:3-alpine</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /site</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> index.html ./<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;python3&#34;</span><span class="p">,</span> <span class="s2">&#34;-m&#34;</span><span class="p">,</span> <span class="s2">&#34;http.server&#34;</span><span class="p">]</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;8000&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></div><p>We can build and run this locally:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">docker build -t my-python-web-server:v1 .
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># uses port 8000 from the Dockerfile</span>
+</span></span><span class="line"><span class="cl">docker run -it -p8000:8000 my-python-web-server:v1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># and, we can override CMD to use a different port</span>
+</span></span><span class="line"><span class="cl">docker run -it -p8123:8123 my-python-web-server:v1 <span class="m">8123</span>
+</span></span></code></pre></div><p>When we deploy this to Kubernetes, we can use <code>args</code> to easily set a port
 to listen on:</p>
 <p><em>NOTE: using a <a href="https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/">static Pod</a>
 for brevity, usually a <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">Deployment</a> or similar would be used in a production environment.</em></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># pod.yaml</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-python-web-server</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">server</span><span class="w">
-</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">my-python-web-server:v1</span><span class="w">
-</span><span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;8888&#34;</span><span class="p">]</span><span class="w">
-</span></code></pre></div><p>We can apply this and use <code>kubectl</code>&rsquo;s port forwarding functionality to access
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># pod.yaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-python-web-server</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">server</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">my-python-web-server:v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;8888&#34;</span><span class="p">]</span><span class="w">
+</span></span></span></code></pre></div><p>We can apply this and use <code>kubectl</code>&rsquo;s port forwarding functionality to access
 our web server:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">kubectl apply -f pod.yaml
-
-kubectl port-forward pods/my-python-web-server 8888:8888
-</code></pre></div><h1 id="wrapping-up">Wrapping up</h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">kubectl apply -f pod.yaml
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kubectl port-forward pods/my-python-web-server 8888:8888
+</span></span></code></pre></div><h1 id="wrapping-up">Wrapping up</h1>
 <p>By using this pattern, we&rsquo;ve:</p>
 <ul>
 <li>provided a set of default options to run our image locally, and</li>
@@ -201,7 +199,7 @@ are many other uses cases for these parameters.</p>
 
 
   <footer class="text-center text-sm text-gray-500 mx-auto max-w-screen-md mt-4 border-solid border-t-[1px] border-amber-600 pb-2 mb-20">
-    <p class="mt-4">Copywrite &copy; Darren Clark 2018 - 2023</p>
+    <p class="mt-4">&copy; 2024 Darren Clark</p>
     <p>
       <a rel="license" class="underline" href="http://creativecommons.org/licenses/by-sa/2.5/ca/">CC BY-SA 2.5 CA</a> (content) /
       <a rel="license" class="underline" href="https://unlicense.org">Unlicense</a> (code snippets)
