@@ -24,7 +24,7 @@ jobs:
       - name: Install Hugo
         run: |
           cd /tmp
-          curl -L -o hugo.tar.gz https://github.com/gohugoio/hugo/releases/download/v0.92.1/hugo_0.92.1_Linux-64bit.tar.gz
+          curl -L -o hugo.tar.gz https://github.com/gohugoio/hugo/releases/download/v0.125.4/hugo_0.125.4_Linux-64bit.tar.gz
           tar -xzf hugo.tar.gz
           mv hugo /usr/local/bin
 

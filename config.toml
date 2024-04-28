@@ -1,9 +1,13 @@
 baseURL = "https://darrenclark.ca/"
 languageCode = "en-us"
 title = "Darren Clark"
+copyright = '© 2024 Darren Clark'
 
 [params]
   mainSections = ["articles"]
+
+[params.author]
+  name = "Darren Clark"
 
 [permalinks]
   articles = "/:title"
@@ -14,3 +18,19 @@ unsafe= true
 [markup.highlight]
 noClasses=false
 guessSyntax=false
+
+[outputs]
+  # Only output a single `/feed.xml` file
+  home = ['html', 'rss']
+  section = ['html']
+  taxonomy = ['html']
+  term = ['html']
+
+[outputFormats]
+  [outputFormats.RSS]
+    mediaType = "application/rss+xml"
+    baseName = "feed"
+
+[services]
+  [services.rss]
+    limit = 20
