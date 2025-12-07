@@ -99,12 +99,12 @@
         <p>Perhaps one of the most perplexing parts of starting a Docker container in
 Kubernetes is the variety of options for specifying the command to be run.</p>
 <p>A <code>Dockerfile</code> can include one or both of <code>CMD</code> and <code>ENTRYPOINT</code> instructions:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> alpine</span><span class="err">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="s">alpine</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">,</span> <span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="err">
-</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> alpine</span><span class="err">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="s">alpine</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">]</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="err">
-</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> alpine</span><span class="err">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="s">alpine</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;echo&#34;</span><span class="p">,</span> <span class="s2">&#34;hello, world!&#34;</span><span class="p">]</span><span class="err">
 </span></span></span></code></pre></div><p>Similarly, Kubernetes has <code>command</code> and <code>args</code> fields:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
@@ -120,50 +120,50 @@ Kubernetes is the variety of options for specifying the command to be run.</p>
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">OnFailure</span><span class="w">
 </span></span></span></code></pre></div><p>Frustratingly, the terminology doesn&rsquo;t quite line up between the two:</p>
 <table>
-<thead>
-<tr>
-<th></th>
-<th>command</th>
-<th>arguments</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Docker</strong></td>
-<td><code>ENTRYPOINT</code></td>
-<td><code>CMD</code></td>
-</tr>
-<tr>
-<td><strong>Kubernetes</strong></td>
-<td><code>command</code></td>
-<td><code>args</code></td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th></th>
+          <th>command</th>
+          <th>arguments</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Docker</strong></td>
+          <td><code>ENTRYPOINT</code></td>
+          <td><code>CMD</code></td>
+      </tr>
+      <tr>
+          <td><strong>Kubernetes</strong></td>
+          <td><code>command</code></td>
+          <td><code>args</code></td>
+      </tr>
+  </tbody>
 </table>
 <p><em>NOTE: In the cases where <code>command</code> or <code>args</code> isn&rsquo;t set, Kubernetes will use
 the equivalent instruction from the <code>Dockerfile</code>.</em></p>
 <p>Both &lsquo;command&rsquo; and &lsquo;arguments&rsquo; are lists.  As such, the &lsquo;command&rsquo; portion can
 include both the executable and some arguments.</p>
 <table>
-<thead>
-<tr>
-<th>command</th>
-<th>arguments</th>
-<th>command run</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>[&quot;echo&quot;]</code></td>
-<td><code>[&quot;hello&quot;, &quot;world&quot;]</code></td>
-<td><code>echo hello world</code></td>
-</tr>
-<tr>
-<td><code>[&quot;echo&quot;, &quot;hello&quot;]</code></td>
-<td><code>[&quot;world&quot;]</code></td>
-<td><code>echo hello world</code></td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>command</th>
+          <th>arguments</th>
+          <th>command run</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>[&quot;echo&quot;]</code></td>
+          <td><code>[&quot;hello&quot;, &quot;world&quot;]</code></td>
+          <td><code>echo hello world</code></td>
+      </tr>
+      <tr>
+          <td><code>[&quot;echo&quot;, &quot;hello&quot;]</code></td>
+          <td><code>[&quot;world&quot;]</code></td>
+          <td><code>echo hello world</code></td>
+      </tr>
+  </tbody>
 </table>
 <h1 id="putting-this-to-use">Putting this to use</h1>
 <p>We can leverage these two fields to build Docker images that are easy to run
@@ -174,9 +174,9 @@ we can override the default options by specifying <code>args</code> in our Kuber
 manifests.</p>
 <p>For example, here&rsquo;s a <code>Dockerfile</code> file using Python&rsquo;s
 <a href="https://docs.python.org/3/library/http.server.html">bundled web server</a>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> python:3-alpine</span><span class="err">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="s">python:3-alpine</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /site</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="w"> </span><span class="s">/site</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> index.html ./<span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;python3&#34;</span><span class="p">,</span> <span class="s2">&#34;-m&#34;</span><span class="p">,</span> <span class="s2">&#34;http.server&#34;</span><span class="p">]</span><span class="err">
