@@ -80,6 +80,10 @@
   .markdown em {
     @apply text-gray-500 dark:text-gray-400 italic;
   }
+
+  .prose hr {
+    @apply w-24 mx-auto;
+  }
 }
 
 /* Syntax (solarized light) */
