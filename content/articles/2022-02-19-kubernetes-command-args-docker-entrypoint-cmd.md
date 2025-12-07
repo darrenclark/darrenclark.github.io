@@ -1,6 +1,7 @@
 ---
 title: "Commands, args, and ENTRYPOINTs in Kubernetes"
 date: 2022-02-19T11:30:00-05:00
+summary: What command will my container <i>actually</i> going to run?  Let's explore how Kubernetes decides which command to run.
 tags: ["kubernetes"]
 ---
 

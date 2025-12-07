@@ -3,141 +3,84 @@
 @tailwind utilities;
 
 @layer base {
-
-  @import "./syntax.css";
-
+  /* Markdown content styling */
   .markdown {
-    @apply text-sm md:text-base;
-  }
-
-  .markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
-    @apply text-left;
+    @apply text-[1.05rem] leading-relaxed;
   }
 
   .markdown h1 {
-    @apply text-3xl font-bold mb-4 mt-2;
-  }
-
-  .markdown h1::before {
-    content: "#";
-    @apply text-2xl text-gray-400 font-mono pr-1;
+    @apply text-[1.75rem] font-semibold mt-10 mb-4;
   }
 
   .markdown h2 {
-    @apply text-2xl font-bold mb-3 mt-2;
-  }
-
-  .markdown h2::before {
-    content: "##";
-    @apply text-xl text-gray-400 font-mono pr-1;
+    @apply text-[1.5rem] font-semibold mt-8 mb-3;
   }
 
   .markdown h3 {
-    @apply text-xl font-bold mb-2 mt-2;
+    @apply text-[1.25rem] font-semibold mt-6 mb-2;
   }
 
-  .markdown h3::before {
-    content: "###";
-    @apply text-lg text-gray-400 font-mono pr-1;
-  }
-
-  .markdown h4 {
-    @apply text-lg font-bold mb-2 mt-2;
-  }
-
-  .markdown h4::before {
-    content: "####";
-    @apply text-base text-gray-400 font-mono pr-1;
-  }
-
-  .markdown h5 {
-    @apply text-base font-bold mb-2 mt-2;
-  }
-
-  .markdown h5::before {
-    content: "#####";
-    @apply text-sm text-gray-400 font-mono pr-1;
-  }
-
-  .markdown h6 {
-    @apply text-sm font-bold mb-2 mt-2;
-  }
-
-  .markdown h6::before {
-    content: "######";
-    @apply text-xs text-gray-400 font-mono pr-1;
+  .markdown h4, .markdown h5, .markdown h6 {
+    @apply text-lg font-semibold mt-4 mb-2;
   }
 
   .markdown p {
-    @apply mb-4 leading-7;
+    @apply mb-6;
   }
 
   .markdown a {
-    @apply text-blue-800 underline;
-  }
-
-  .markdown a:hover {
-    @apply text-blue-500;
-  }
-
-  .markdown a:visited {
-    @apply text-purple-500;
-  }
-
-  .markdown > pre {
-    @apply ml-4 my-8 p-3 text-xs md:text-sm bg-gray-200 drop-shadow-sm overflow-scroll;
-    color: #586e75;
+    @apply text-link-light dark:text-link-dark hover:opacity-70 transition-opacity;
   }
 
   .markdown code {
-    @apply px-1 py-0.5 bg-gray-200;
+    @apply bg-code-bg-light dark:bg-code-bg-dark px-2 py-1 rounded text-sm font-mono text-accent-light dark:text-accent-dark;
   }
 
-  .markdown p code, .markdown ul code, .markdown ol code {
-    @apply text-sm;
+  .markdown pre {
+    @apply bg-code-bg-light dark:bg-code-bg-dark p-5 rounded-lg overflow-x-auto mb-6 border border-border-light dark:border-border-dark;
   }
 
-  .markdown .highlight {
-    @apply my-8 ml-4;
-  }
-
-  .markdown .highlight pre {
-    @apply p-3 text-xs md:text-sm drop-shadow-sm overflow-scroll;
-  }
-
-  .markdown .highlight code {
-    @apply bg-inherit px-0;
+  .markdown pre code {
+    @apply bg-transparent px-0 py-0 text-gray-700 dark:text-gray-200 text-sm leading-relaxed;
   }
 
   .markdown blockquote {
-    @apply my-8 ml-4 pl-2 border-solid border-l-2 border-gray-300 text-gray-500;
+    @apply border-l-4 border-accent-light dark:border-accent-dark pl-6 my-6 text-gray-500 dark:text-gray-400 italic;
   }
 
   .markdown ul {
-    @apply list-disc list-inside my-4;
+    @apply list-disc pl-8 mb-6 space-y-2;
   }
 
   .markdown ol {
-    @apply list-decimal list-inside my-4;
-  }
-
-  .markdown img {
-    @apply px-4 my-8 max-w-full drop-shadow-2xl;
-  }
-
-  .markdown hr {
-    @apply mx-auto my-8 w-2/3 border-solid border-t-2 border-gray-300;
+    @apply list-decimal pl-8 mb-6 space-y-2;
   }
 
   .markdown table {
-    @apply table-auto my-8;
+    @apply w-full border-collapse mb-6;
   }
 
-  .markdown td, .markdown td {
-    @apply p-2;
+  .markdown th,
+  .markdown td {
+    @apply border border-border-light dark:border-border-dark p-3 text-left;
+  }
+
+  .markdown th {
+    @apply bg-surface-light dark:bg-surface-dark font-semibold;
+  }
+
+  .markdown img {
+    @apply my-6 max-w-full rounded-lg;
+  }
+
+  .markdown hr {
+    @apply my-8 border-t border-border-light dark:border-border-dark;
+  }
+
+  .markdown em {
+    @apply text-gray-500 dark:text-gray-400 italic;
   }
 }
-
 
 /* Syntax (solarized light) */
 

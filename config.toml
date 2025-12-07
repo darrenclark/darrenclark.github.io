@@ -6,6 +6,10 @@ copyright = '© 2024 Darren Clark'
 [params]
   mainSections = ["articles"]
 
+  # TODO: Needed? Or not?
+  description = "Software developer living and working in Toronto"
+  github = "https://github.com/darrenclark"
+
 [params.author]
   name = "Darren Clark"
 

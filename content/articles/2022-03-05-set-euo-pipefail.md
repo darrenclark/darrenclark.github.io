@@ -2,15 +2,8 @@
 title: "Bashing Safely: set -euo pipefail"
 date: 2022-03-05T17:27:32-05:00
 tags: ['shell']
+summary: I'll save you a click - start putting <code>set -euo pipefail</code> at the top of your bash scripts.
 draft: true
----
-
-<div style='text-align: center'>
-
-*'Bashing Safely' is a series about writing safe and maintainable shell scripts.*
-
-</div>
-
 ---
 
 Out of the box, `bash` and other shells are configured for interactive use.
@@ -23,7 +16,7 @@ probably want the whole shell script to exit.
 
 For that reason, and a few more, I recommend starting all `bash` scripts with:
 
-```shell
+```bash
 #!/usr/bin/env bash
 
 set -euo pipefail
@@ -79,7 +72,7 @@ software - is properly handling errors (non-zero exit codes).
 
 Check out this simple script:
 
-```shell
+```bash
 #!/usr/bin/env bash
 
 set -e
@@ -92,7 +85,7 @@ echo "Done"
 When we run it, the `rm` command returns a non-zero exit code, and the script
 is halted before the `echo` command.
 
-```
+```bash
 $ /tmp/set_e.sh
 rm: /tmp/four-oh-four: No such file or directory
 ```

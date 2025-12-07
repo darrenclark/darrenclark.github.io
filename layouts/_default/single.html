@@ -1,17 +1,21 @@
 {{ define "main" }}
+<article>
+    <div class="mb-12">
+        <h2 class="text-[2rem] font-bold mb-3 leading-tight">{{ .Title }}</h2>
+        <div class="text-gray-500 dark:text-gray-400 text-[0.95rem]">
+            Published on {{ .Date.Format "Jan 2, 2006" }}
+            {{ with .Params.tags }}
+            in
+            {{ range $index, $tag := . }}
+                {{ if $index }}, {{ end }}
+                <a href="{{ "/tags/" | relURL }}{{ . | urlize }}" class="text-link-light dark:text-link-dark hover:opacity-70">#{{ . }}</a>
+            {{ end }}
+            {{ end }}
+        </div>
+    </div>
 
-<div class="mx-auto max-w-screen-md mt-4">
-  <h1 class="text-4xl font-bold mb-3 mt-20 text-center">{{.Title}}</h1>
-  <p class="text-center text-sm">
-    Published on {{.Date.Format "Jan 02, 2006"}} in 
-    {{ range .Params.tags }}
-        <a class="text-orange-800 font-light" href="{{ ($.Site.GetPage (printf "/%s/%s" "tags" .)).Permalink }}">#{{ . }}</a>
-    {{ end }}
-  </p>
-
-  <div class="markdown text-justify mx-4 my-20">
-    {{.Content}}
-  </div>
-</div>
-
+    <div class="markdown prose prose-lg max-w-none">
+        {{ .Content }}
+    </div>
+</article>
 {{ end }}

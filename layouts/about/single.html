@@ -1,0 +1,11 @@
+{{ define "main" }}
+<div class="text-gray-700 dark:text-gray-200 text-[1.05rem] leading-relaxed">
+    <img src="/images/portrait.jpg" alt="Darren Clark" class="w-[140px] h-[140px] rounded-full object-cover object-[center_20%] float-none md:float-right md:ml-8 mb-6 md:mb-4 border-3 border-border-light dark:border-border-dark block mx-auto md:mx-0">
+    
+    <h2 class="text-[1.75rem] font-semibold mb-4 text-gray-700 dark:text-gray-200 text-center md:text-left">Hi, I'm Darren</h2>
+    
+    <div class="markdown">
+        {{ .Content }}
+    </div>
+</div>
+{{ end }}
